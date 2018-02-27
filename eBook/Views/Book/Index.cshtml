@@ -1,0 +1,102 @@
+﻿@model eBook.Models.Book
+
+@{
+    ViewBag.Title = "圖書資訊";
+}
+
+<h2>圖書資訊查詢</h2>
+
+@using (Html.BeginForm("Index", "Book", FormMethod.Post, new { id = "Form1" }))
+{
+    <div class="form-horizontal">
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.BOOK_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BOOK_ID, new { @class = "form-control" })
+            </div>
+        </div>*@
+
+        <!--書籍名稱-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BOOK_NAME, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <!--圖書類別-->
+        <div class="form-group">
+            <label class="control-label col-md-2">圖書類別</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.BOOK_CLASS_ID, (List<SelectListItem>)ViewBag.BookClass, "請選擇", new { @class = "form-control" })
+            </div>
+        </div>
+        
+        <!--借閱人-->
+        <div class="form-group">
+            <label class="control-label col-md-2">借閱人</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.BOOK_KEEPER, (List<SelectListItem>)ViewBag.KeeperClass, "請選擇", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <!--借閱狀態-->
+        <div class="form-group">
+            <label class="control-label col-md-2">借閱狀態</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.BOOK_STATUS, (List<SelectListItem>)ViewBag.StatusClass, "請選擇", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                <input type="submit" value="查詢" class="btn btn-default"/>
+
+                @Html.ActionLink("新增書籍", "InsertBook")<!--顯示 "新增書籍"超連結-->
+                @Html.ActionLink("清除", "Index")
+            </div>
+        </div>
+
+@*
+        @if (ViewBag.SearchResult != null)
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>員工名稱</th>
+                        <th>職稱</th>
+                        <th>任職日期</th>
+                        <th>性別</th>
+                        <th>年齡</th>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in (List<eHR.Models.Employees>)ViewBag.SearchResult)
+                    {
+                        <tr id='@item.EmployeeId'>
+                            <td>@item.EmployeeId</td>
+                            <td>@item.EmployeeFirstName  @item.EmployeeLastName</td>
+                            <td>@item.JobTitleId - @item.JobTitle</td>
+                            <td>@item.HireDate.Replace('-', '/')</td>
+                            <td>@item.Gender</td>
+                            <td>@item.Age</td>
+                            <td>@Html.ActionLink("修改", "UpdateEmployee", new { id = item.EmployeeId })</td>
+                            <td>
+                                <a class="btnDelete" href="#" onclick="test(this,'@item.EmployeeId');">刪除</a>
+                                <input class="hidEmployeeId" type="hidden" value='@item.EmployeeId' />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }*@
+    </div>
+
+}
+
