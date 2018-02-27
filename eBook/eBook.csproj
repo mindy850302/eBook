@@ -140,6 +140,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\BookSearchArg.cs" />
     <Compile Include="Models\BookServices.cs" />
     <Compile Include="Models\ClassServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
