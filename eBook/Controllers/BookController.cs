@@ -35,14 +35,14 @@ namespace eBook.Controllers
         }
 
         [HttpGet]
-        ///show create book page
+        ///顯示新增書籍頁面
         public ActionResult InsertBook() {
             ViewBag.BookClass = classServices.GetClassTable();
             return View();
         }
 
         [HttpPost]
-        ///insert new book
+        ///執行新增書籍
         public ActionResult InsertBook(Models.Book book)
         {
             Models.BookServices bookServices = new Models.BookServices();

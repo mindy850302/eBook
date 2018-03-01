@@ -92,10 +92,20 @@
                                 <td>@item.BOOK_KEEPER</td>
 	                        }
                             <td>修改</td>
-                            <td>
-                                <a class="btnDelete" href="#">刪除</a>
-                                <input class="hidBookId" type="hidden" value='@item.BOOK_ID' />
-                            </td>
+                            @if (@item.BOOK_STATUS.Equals("可以借出") || @item.BOOK_STATUS.Equals("不可借出"))
+                            {
+                                <td>
+                                    <a class="btnDelete" href="#">刪除</a>
+                                    <input class="hidBookId" type="hidden" value='@item.BOOK_ID' />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <a class="btnDelete" href="#">刪除</a>
+                                    <input class="hidBookId" type="hidden" value='No' />
+                                </td>
+                            }
                             @*<td>@Html.ActionLink("修改", "UpdateEmployee", new { id = item.EmployeeId })</td>
                             <td>
                                 <a class="btnDelete" href="#" onclick="test(this,'@item.EmployeeId');">刪除</a>
@@ -110,24 +120,30 @@
     <script>
         $(document).ready(function () {
             $('.btnDelete').click(function (e) {
-                var choose = confirm("是否刪除 ? ");
-                if (choose == true) {
-                    var tr = $(this).closest('tr')
-                    alert("value : " + $(this).next().val());
-                    $.ajax({
-                        type: "POST",
-                        url: "/Book/DeleteBook",
-                        data: "bookId=" + $(this).next().val(),
-                        dataType: "json",
-                        success: function (response) {
-                            $(tr).remove();
-                        }, error: function (error) {
-                            alert("系統發生錯誤");
-                        }
-                    });
-                    alert("刪除成功");
-
-                }  
+                var value = $(this).next().val();
+                if (value === "No") {
+                    alert("已借出的書籍不可刪除!");
+                }
+                else
+                {
+                    var choose = confirm("是否刪除 ? ");
+                    if (choose == true) {
+                        var tr = $(this).closest('tr')
+                        alert("value : " + $(this).next().val());
+                        $.ajax({
+                            type: "POST",
+                            url: "/Book/DeleteBook",
+                            data: "bookId=" + $(this).next().val(),
+                            dataType: "json",
+                            success: function (response) {
+                                $(tr).remove();
+                            }, error: function (error) {
+                                alert("系統發生錯誤");
+                            }
+                        });
+                        alert("刪除成功");
+                    }
+                }
             });
         });
         
