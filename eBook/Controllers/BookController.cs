@@ -49,9 +49,73 @@ namespace eBook.Controllers
             if (ModelState.IsValid)
             {
                 bookServices.InsertBook(book);
+                return RedirectToAction("Index", "Book");
             }
-            Models.Book emptybook = new Models.Book();
-                return View("index");
+            else
+            {
+                ViewBag.BookClass = classServices.GetClassTable();
+                return View();
+            }
+
+            //return RedirectToAction("Index","Book");
+        }
+
+        [HttpGet]
+        ///顯示修改書籍頁面
+        public ActionResult UpdateBook(String id)
+        {
+            Models.BookServices bookServices = new Models.BookServices();
+            
+            ///取得欲更新的書籍資訊
+            ViewBag.TheUpdateBook = bookServices.GetUpdateBook(id);
+            
+            ///取得圖書類別
+            List<SelectListItem> BookClassSelect = classServices.GetClassTable();
+            foreach (SelectListItem i in BookClassSelect) {
+                if (i.Value.Equals(ViewBag.TheUpdateBook.BOOK_CLASS_ID)){
+                    i.Selected = true;
+                }
+            }
+            ViewBag.BookClass = BookClassSelect;
+
+            ///取得借閱狀態
+            List<SelectListItem> StatusClassSelect = classServices.GetStatusTable();
+            foreach (SelectListItem i in StatusClassSelect)
+            {
+                if (i.Value.Equals(ViewBag.TheUpdateBook.BOOK_STATUS))
+                {
+                    i.Selected = true;
+                }
+            }
+            ViewBag.StatusClass = StatusClassSelect;
+
+            ///取得借閱人
+            List<SelectListItem> KeeperClassSelect = classServices.GetKeeperTable();
+            foreach (SelectListItem i in KeeperClassSelect)
+            {
+                if (i.Value.Equals(ViewBag.TheUpdateBook.BOOK_KEEPER))
+                {
+                    i.Selected = true;
+                }
+            }
+            ViewBag.KeeperClass = KeeperClassSelect;
+
+            return View();
+        }
+
+        [HttpPost]
+        ///更新書籍資料
+        public ActionResult UpdateBook(Models.Book book)
+        {
+            Models.BookServices bookServices = new Models.BookServices();
+            if (ModelState.IsValid)
+            {
+                int i = 5;
+                i = bookServices.UpdateBook(book);
+                Console.Write(i);
+            }
+
+            return RedirectToAction("Index", "Book");
         }
 
         /// <summary>

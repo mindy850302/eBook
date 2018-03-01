@@ -60,15 +60,15 @@ namespace eBook.Models
         public string BOOK_NOTE { get; set; }
 
         /// <summary>
-        /// 狀態(是否可借出)
+        /// 借閱狀態(是否可借出)
         /// </summary>
-        [DisplayName("狀態")]
+        [DisplayName("借閱狀態")]
         public string BOOK_STATUS { get; set; }
 
         /// <summary>
-        /// 書籍保管人
+        /// 借閱人
         /// </summary>
-        [DisplayName("書籍保管人")]
+        [DisplayName("借閱人")]
         public string BOOK_KEEPER { get; set; }
 
         /// <summary>
@@ -78,9 +78,9 @@ namespace eBook.Models
         public string CREATE_DATE { get; set; }
 
         /// <summary>
-        /// 建議使用者
+        /// 建立使用者
         /// </summary>
-        [DisplayName("建議使用者")]
+        [DisplayName("建立使用者")]
         public string CREATE_USER { get; set; }
 
         /// <summary>

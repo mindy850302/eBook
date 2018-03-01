@@ -91,7 +91,7 @@
 	                        {
                                 <td>@item.BOOK_KEEPER</td>
 	                        }
-                            <td>修改</td>
+                            <td>@Html.ActionLink("修改", "UpdateBook", new { id = item.BOOK_ID })</td>
                             @if (@item.BOOK_STATUS.Equals("可以借出") || @item.BOOK_STATUS.Equals("不可借出"))
                             {
                                 <td>
