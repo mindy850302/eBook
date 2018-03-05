@@ -118,6 +118,55 @@ namespace eBook.Controllers
             return RedirectToAction("Index", "Book");
         }
 
+        [HttpGet]
+        
+        ///顯示書籍明細頁面
+        public ActionResult DetailOfBook(String id)
+        {
+            Models.BookServices bookServices = new Models.BookServices();
+
+            ///取得特定書籍資訊
+            ViewBag.DetailBook = bookServices.GetUpdateBook(id);
+
+            ///取得圖書類別
+            List<SelectListItem> BookClassSelect = classServices.GetClassTable();
+            foreach (SelectListItem i in BookClassSelect)
+            {
+                if (i.Value.Equals(ViewBag.DetailBook.BOOK_CLASS_ID))
+                {
+                    i.Selected = true;
+                    ViewBag.Class = i.Text;
+                }
+            }
+            ViewBag.BookClass = BookClassSelect;
+
+            ///取得借閱狀態
+            List<SelectListItem> StatusClassSelect = classServices.GetStatusTable();
+            foreach (SelectListItem i in StatusClassSelect)
+            {
+                if (i.Value.Equals(ViewBag.DetailBook.BOOK_STATUS))
+                {
+                    i.Selected = true;
+                    ViewBag.Status = i.Text;
+                }
+            }
+            ViewBag.StatusClass = StatusClassSelect;
+
+            ///取得借閱人
+            List<SelectListItem> KeeperClassSelect = classServices.GetKeeperTable();
+            foreach (SelectListItem i in KeeperClassSelect)
+            {
+                if (i.Value.Equals(ViewBag.DetailBook.BOOK_KEEPER))
+                {
+                    i.Selected = true;
+                    ViewBag.Keeper = i.Text;
+                }
+            }
+            ViewBag.KeeperClass = KeeperClassSelect;
+
+            return View();
+        }
+
         /// <summary>
         /// 刪除書籍
         /// </summary>

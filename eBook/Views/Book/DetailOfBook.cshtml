@@ -1,0 +1,139 @@
+﻿@model eBook.Models.Book
+
+@{
+    ViewBag.Title = "DetailOfBook";
+}
+
+<h2>DetailOfBook</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Book</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.BOOK_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.BOOK_ID , new { Value = @ViewBag.TheUpdateBook.BOOK_ID,@class = "form-control"  })
+                    @Html.ValidationMessageFor(model => model.BOOK_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+        <!--隱藏書籍ID-->
+        @Html.TextBoxFor(model => model.BOOK_ID, new { Value = @ViewBag.DetailBook.BOOK_ID, @class = "form-control", @type = "hidden" })
+
+        <!--書籍名稱-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.DetailBook.BOOK_NAME</p>
+                @*@Html.TextBoxFor(model => model.BOOK_NAME, new { Value = @ViewBag.DetailBook.BOOK_NAME, @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.BOOK_NAME, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <!--書籍作者-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_AUTHOR, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.DetailBook.BOOK_AUTHOR</p>
+            </div>
+        </div>
+
+        <!--出版商-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_PUBLISHER, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.DetailBook.BOOK_PUBLISHER</p>
+            </div>
+        </div>
+
+        <!--內容簡介-->
+        <script>
+            $(document).ready(function () {
+                $('#BOOK_NOTE').val('@ViewBag.DetailBook.BOOK_NOTE');
+            });
+        </script>
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_NOTE, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.DetailBook.BOOK_NOTE</p>
+            </div>
+        </div>
+
+        <!--購書日期-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_BOUGHT_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.DetailBook.BOOK_BOUGHT_DATE</p>
+            </div>
+        </div>
+
+        <!--圖書類別-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_CLASS_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.Class</p>
+            </div>
+        </div>
+
+        <!--借閱狀態-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_STATUS, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.Status</p>
+            </div>
+        </div>
+
+        <!--借閱人-->
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOOK_KEEPER, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="control-label" style="text-align:left;">@ViewBag.Keeper</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+                <button class="btn btn-default">@Html.ActionLink("Back to List", "Index")</button>
+            </div>
+        </div>
+    </div>
+}
+<script>
+        $(document).ready(function () {
+            $('.btnDelete').click(function (e) {
+                var value = $(this).next().val();
+                //if (value === "No") {
+                //    alert("已借出的書籍不可刪除!");
+                //}
+                //else
+                //{
+                    var choose = confirm("是否刪除 ? ");
+                    if (choose == true) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/Book/DeleteBook",
+                            data: "bookId=" + $(this).next().val(),
+                            dataType: "json",
+                            success: function (response) {
+                                alert("刪除成功");
+                            }, error: function (error) {
+                                alert("系統發生錯誤");
+                            }
+                        });
+                    }
+                //}
+                    $(location).attr('href', '/Book');
+            });
+        });
+
+</script>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

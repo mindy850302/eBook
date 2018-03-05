@@ -54,9 +54,8 @@
             </div>
             <div class="col-md-10">
                 <input type="submit" value="查詢" class="btn btn-default"/>
-
                 @Html.ActionLink("新增書籍", "InsertBook")<!--顯示 "新增書籍"超連結-->
-                @Html.ActionLink("清除", "Index")
+                @Html.ActionLink("清除", "Index")<!--顯示 "清除"超連結-->
             </div>
         </div>
 
@@ -80,6 +79,7 @@
                     {
                         <tr id='@item.BOOK_ID'>
                             <td>@item.BOOK_CLASS_ID</td>
+                            @*<td>@Html.ActionLink(item.BOOK_NAME, "DetailOfBook", new { id = item.BOOK_ID })</td>*@
                             <td>@item.BOOK_NAME</td>
                             <td>@item.BOOK_BOUGHT_DATE</td>
                             <td>@item.BOOK_STATUS</td>
@@ -129,19 +129,19 @@
                     var choose = confirm("是否刪除 ? ");
                     if (choose == true) {
                         var tr = $(this).closest('tr')
-                        alert("value : " + $(this).next().val());
+                        //alert("value : " + $(this).next().val());
                         $.ajax({
-                            type: "POST",
-                            url: "/Book/DeleteBook",
-                            data: "bookId=" + $(this).next().val(),
-                            dataType: "json",
+                            type: "POST", //POST or GET
+                            url: "/Book/DeleteBook",// 發送請求的url
+                            data: "bookId=" + $(this).next().val(),//傳給server 的data
+                            dataType: "json", //傳回的數據類型 ,可為xml,html,text....
                             success: function (response) {
                                 $(tr).remove();
+                                alert("刪除成功");
                             }, error: function (error) {
                                 alert("系統發生錯誤");
                             }
                         });
-                        alert("刪除成功");
                     }
                 }
             });

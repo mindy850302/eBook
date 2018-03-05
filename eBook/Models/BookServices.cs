@@ -96,6 +96,7 @@ namespace eBook.Models
                           Left JOIN MEMBER_M as d
 	                        ON a.BOOK_KEEPER = d.USER_ID
                         WHERE (a.BOOK_NAME LIKE '%' + @BookName + '%') AND 
+                              (a.BOOK_NAME != '' ) AND 
 	                          (a.BOOK_CLASS_ID LIKE '%'+ @BookClassId + '%') AND
 	                          (a.BOOK_KEEPER LIKE '%'+ @BookKeeper + '%') AND
 	                          (a.BOOK_STATUS LIKE '%' + @BookStatus + '%')

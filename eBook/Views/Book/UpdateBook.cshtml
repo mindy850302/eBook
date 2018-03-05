@@ -145,10 +145,42 @@
             <div class="col-md-2 ">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
+            <div class="col-md-2 ">
+                <button class="btnDelete btn btn-default" href="#">刪除</button>
+                <input class="hidBookId" type="hidden" value='@ViewBag.TheUpdateBook.BOOK_ID' />
+            </div>
         </div>
     </div>
 }
+<script>
+        $(document).ready(function () {
+            $('.btnDelete').click(function (e) {
+                var value = $(this).next().val();
+                //if (value === "No") {
+                //    alert("已借出的書籍不可刪除!");
+                //}
+                //else
+                //{
+                    var choose = confirm("是否刪除 ? ");
+                    if (choose == true) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/Book/DeleteBook",
+                            data: "bookId=" + $(this).next().val(),
+                            dataType: "json",
+                            success: function (response) {
+                                alert("刪除成功");
+                            }, error: function (error) {
+                                alert("系統發生錯誤");
+                            }
+                        });
+                    }
+                //}
+                    $(location).attr('href', '/Book');
+            });
+        });
 
+</script>
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/jquery.validate.min.js"></script>
