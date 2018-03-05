@@ -62,7 +62,7 @@
 
         @if (ViewBag.SearchResult != null)
         {
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped col-md-10">
                 <thead>
                     <tr>
                         <th>圖書類別</th>
@@ -91,18 +91,18 @@
 	                        {
                                 <td>@item.BOOK_KEEPER</td>
 	                        }
-                            <td>@Html.ActionLink("修改", "UpdateBook", new { id = item.BOOK_ID })</td>
+                            <td><button class="btn btn-default"><span class="glyphicon glyphicon-pencil">@Html.ActionLink("修改", "UpdateBook", new { id = item.BOOK_ID },new { @style = "color:#000000"})</span></button></td>
                             @if (@item.BOOK_STATUS.Equals("可以借出") || @item.BOOK_STATUS.Equals("不可借出"))
                             {
                                 <td>
-                                    <a class="btnDelete" href="#">刪除</a>
+                                    <a class="btnDelete" href="#"><button class="btn btn-default"><span class="glyphicon glyphicon-trash">刪除</span> </button> </a>
                                     <input class="hidBookId" type="hidden" value='@item.BOOK_ID' />
                                 </td>
                             }
                             else
                             {
                                 <td>
-                                    <a class="btnDelete" href="#">刪除</a>
+                                    <a class="btnDelete" href="#"><button class="btn btn-default"><span class="glyphicon glyphicon-trash">刪除</span> </button> </a>
                                     <input class="hidBookId" type="hidden" value='No' />
                                 </td>
                             }
@@ -122,7 +122,7 @@
             $('.btnDelete').click(function (e) {
                 var value = $(this).next().val();
                 if (value === "No") {
-                    alert("已借出的書籍不可刪除!");
+                    alert("已借出的書籍不可刪除! 請先修改狀態");
                 }
                 else
                 {

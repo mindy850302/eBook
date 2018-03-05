@@ -27,22 +27,23 @@ namespace eBook.Controllers
         {
             Models.BookServices bookService = new Models.BookServices();
 
-            ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);
-            ViewBag.BookClass = classServices.GetClassTable();
-            ViewBag.KeeperClass = classServices.GetKeeperTable();
-            ViewBag.StatusClass = classServices.GetStatusTable();
+            ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);///回傳查詢結果
+            ViewBag.BookClass = classServices.GetClassTable();///取得圖書類別
+            ViewBag.KeeperClass = classServices.GetKeeperTable();///取得借閱人類別
+            ViewBag.StatusClass = classServices.GetStatusTable();///取得借閱狀態類別
+
             return View("Index");
         }
 
-        [HttpGet]
         ///顯示新增書籍頁面
+        [HttpGet]
         public ActionResult InsertBook() {
             ViewBag.BookClass = classServices.GetClassTable();
             return View();
         }
 
-        [HttpPost]
         ///執行新增書籍
+        [HttpPost]
         public ActionResult InsertBook(Models.Book book)
         {
             Models.BookServices bookServices = new Models.BookServices();
@@ -59,9 +60,9 @@ namespace eBook.Controllers
 
             //return RedirectToAction("Index","Book");
         }
-
-        [HttpGet]
+        
         ///顯示修改書籍頁面
+        [HttpGet]
         public ActionResult UpdateBook(String id)
         {
             Models.BookServices bookServices = new Models.BookServices();
@@ -103,8 +104,8 @@ namespace eBook.Controllers
             return View();
         }
 
-        [HttpPost]
         ///更新書籍資料
+        [HttpPost]
         public ActionResult UpdateBook(Models.Book book)
         {
             Models.BookServices bookServices = new Models.BookServices();
@@ -118,9 +119,8 @@ namespace eBook.Controllers
             return RedirectToAction("Index", "Book");
         }
 
-        [HttpGet]
-        
         ///顯示書籍明細頁面
+        [HttpGet]
         public ActionResult DetailOfBook(String id)
         {
             Models.BookServices bookServices = new Models.BookServices();

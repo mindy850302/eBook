@@ -61,7 +61,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.BOOK_NOTE, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.BOOK_NOTE, new { Value = @ViewBag.TheUpdateBook.BOOK_NOTE, @class = "form-control" })
+                @Html.TextAreaFor(model => model.BOOK_NOTE, new {@class = "form-control" })
                 @Html.ValidationMessageFor(model => model.BOOK_NOTE, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -92,6 +92,14 @@
                 @Html.ValidationMessageFor(model => model.BOOK_STATUS, "", new { @class = "text-danger" })
             </div>
         </div>
+        @if (ViewBag.TheUpdateBook.BOOK_STATUS.Equals("A")|| ViewBag.TheUpdateBook.BOOK_STATUS.Equals("U"))
+        {
+            <input type="hidden" id="SatausOfDelete" value="yes"/>
+        }
+        else
+        {
+            <input type="hidden" id="SatausOfDelete" value="no" />
+        }
 
         <!--借閱人-->
             <script>
@@ -155,12 +163,13 @@
 <script>
         $(document).ready(function () {
             $('.btnDelete').click(function (e) {
+                var status = $('#SatausOfDelete').val();
                 var value = $(this).next().val();
-                //if (value === "No") {
-                //    alert("已借出的書籍不可刪除!");
-                //}
-                //else
-                //{
+                if (status === "no") {
+                    alert("已借出的書籍不可刪除! 請先修改狀態 ");
+                }
+                else
+                {
                     var choose = confirm("是否刪除 ? ");
                     if (choose == true) {
                         $.ajax({
@@ -170,13 +179,14 @@
                             dataType: "json",
                             success: function (response) {
                                 alert("刪除成功");
+                                $(location).attr('href', '/Book');
                             }, error: function (error) {
                                 alert("系統發生錯誤");
                             }
                         });
                     }
-                //}
-                    $(location).attr('href', '/Book');
+                }
+                    
             });
         });
 
