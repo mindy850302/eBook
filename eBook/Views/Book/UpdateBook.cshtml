@@ -102,34 +102,6 @@
         }
 
         <!--借閱人-->
-            <script>
-                $(document).ready(function () {
-                    var FirstBookStatus = $("#BOOK_STATUS").val();
-                    if (FirstBookStatus === "A" || FirstBookStatus === "U")
-                    {
-                        $("#hiddenKeeper").show();
-                        $("#showKeeper").hide();
-                    }
-                    else {
-                        $("#hiddenKeeper").hide();
-                        $("#showKeeper").show();
-                    }
-                    $("#BOOK_STATUS").click(function (e) {
-                        var BookStatus = $(this).val();
-                        if (BookStatus === "A" || BookStatus === "U")
-                        {
-                            $("#hiddenKeeper").show();
-                            $("#showKeeper").hide();
-                        }
-                        else
-                        {
-                            $("#hiddenKeeper").hide();
-                            $("#showKeeper").show();
-                        }
-                    });
-                    
-                });
-            </script>
             <div class="form-group" id="hiddenKeeper">
                 @Html.LabelFor(model => model.BOOK_KEEPER, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -161,7 +133,27 @@
     </div>
 }
 <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
+        var FirstBookStatus = $("#BOOK_STATUS").val();
+        if (FirstBookStatus === "A" || FirstBookStatus === "U") {
+            $("#hiddenKeeper").show();
+            $("#showKeeper").hide();
+        }
+        else {
+            $("#hiddenKeeper").hide();
+            $("#showKeeper").show();
+        }
+        $("#BOOK_STATUS").click(function (e) {
+            var BookStatus = $(this).val();
+            if (BookStatus === "A" || BookStatus === "U") {
+                $("#hiddenKeeper").show();
+                $("#showKeeper").hide();
+            }
+            else {
+                $("#hiddenKeeper").hide();
+                $("#showKeeper").show();
+            }
+        });
             $('.btnDelete').click(function (e) {
                 var status = $('#SatausOfDelete').val();
                 var value = $(this).next().val();

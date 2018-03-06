@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PagedList.Mvc;
+using PagedList;
 
 namespace eBook.Controllers
 {
@@ -14,10 +16,8 @@ namespace eBook.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            ///下拉式選單資料
-            ViewBag.BookClass = classServices.GetClassTable();
-            ViewBag.KeeperClass = classServices.GetKeeperTable();
-            ViewBag.StatusClass = classServices.GetStatusTable();
+            GetDropdownList();
+
             return View();
         }
 
@@ -28,9 +28,8 @@ namespace eBook.Controllers
             Models.BookServices bookService = new Models.BookServices();
 
             ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);///回傳查詢結果
-            ViewBag.BookClass = classServices.GetClassTable();///取得圖書類別
-            ViewBag.KeeperClass = classServices.GetKeeperTable();///取得借閱人類別
-            ViewBag.StatusClass = classServices.GetStatusTable();///取得借閱狀態類別
+
+            GetDropdownList();
 
             return View("Index");
         }
@@ -38,7 +37,8 @@ namespace eBook.Controllers
         ///顯示新增書籍頁面
         [HttpGet]
         public ActionResult InsertBook() {
-            ViewBag.BookClass = classServices.GetClassTable();
+            ///下拉式選單資料
+            ViewBag.BookClass = classServices.GetClassTable();///圖書類別
             return View();
         }
 
@@ -47,6 +47,8 @@ namespace eBook.Controllers
         public ActionResult InsertBook(Models.Book book)
         {
             Models.BookServices bookServices = new Models.BookServices();
+
+            ///判斷是否符合驗證
             if (ModelState.IsValid)
             {
                 bookServices.InsertBook(book);
@@ -54,11 +56,10 @@ namespace eBook.Controllers
             }
             else
             {
-                ViewBag.BookClass = classServices.GetClassTable();
+                ///下拉式選單資料
+                ViewBag.BookClass = classServices.GetClassTable();///圖書類別
                 return View();
             }
-
-            //return RedirectToAction("Index","Book");
         }
         
         ///顯示修改書籍頁面
@@ -69,8 +70,8 @@ namespace eBook.Controllers
             
             ///取得欲更新的書籍資訊
             ViewBag.TheUpdateBook = bookServices.GetUpdateBook(id);
-            
-            ///取得圖書類別
+
+            ///取得預設圖書類別
             List<SelectListItem> BookClassSelect = classServices.GetClassTable();
             foreach (SelectListItem i in BookClassSelect) {
                 if (i.Value.Equals(ViewBag.TheUpdateBook.BOOK_CLASS_ID)){
@@ -79,7 +80,7 @@ namespace eBook.Controllers
             }
             ViewBag.BookClass = BookClassSelect;
 
-            ///取得借閱狀態
+            ///取得預設借閱狀態
             List<SelectListItem> StatusClassSelect = classServices.GetStatusTable();
             foreach (SelectListItem i in StatusClassSelect)
             {
@@ -90,7 +91,7 @@ namespace eBook.Controllers
             }
             ViewBag.StatusClass = StatusClassSelect;
 
-            ///取得借閱人
+            ///取得預設借閱人
             List<SelectListItem> KeeperClassSelect = classServices.GetKeeperTable();
             foreach (SelectListItem i in KeeperClassSelect)
             {
@@ -111,12 +112,11 @@ namespace eBook.Controllers
             Models.BookServices bookServices = new Models.BookServices();
             if (ModelState.IsValid)
             {
-                int i = 5;
-                i = bookServices.UpdateBook(book);
-                Console.Write(i);
+                ///更新書籍
+                bookServices.UpdateBook(book); 
             }
 
-            return RedirectToAction("Index", "Book");
+            return RedirectToAction("Index", "Book");///RedirectToAction("Function name","Controller name")
         }
 
         ///顯示書籍明細頁面
@@ -128,7 +128,7 @@ namespace eBook.Controllers
             ///取得特定書籍資訊
             ViewBag.DetailBook = bookServices.GetUpdateBook(id);
 
-            ///取得圖書類別
+            ///取得預設圖書類別
             List<SelectListItem> BookClassSelect = classServices.GetClassTable();
             foreach (SelectListItem i in BookClassSelect)
             {
@@ -140,7 +140,7 @@ namespace eBook.Controllers
             }
             ViewBag.BookClass = BookClassSelect;
 
-            ///取得借閱狀態
+            ///取得預設借閱狀態
             List<SelectListItem> StatusClassSelect = classServices.GetStatusTable();
             foreach (SelectListItem i in StatusClassSelect)
             {
@@ -152,7 +152,7 @@ namespace eBook.Controllers
             }
             ViewBag.StatusClass = StatusClassSelect;
 
-            ///取得借閱人
+            ///取得預設借閱人
             List<SelectListItem> KeeperClassSelect = classServices.GetKeeperTable();
             foreach (SelectListItem i in KeeperClassSelect)
             {
@@ -186,6 +186,14 @@ namespace eBook.Controllers
             {
                 return this.Json(false);
             }
+        }
+
+        public void GetDropdownList()
+        {
+            ///下拉式選單資料
+            ViewBag.BookClass = classServices.GetClassTable();///圖書類別
+            ViewBag.KeeperClass = classServices.GetKeeperTable();///借閱人
+            ViewBag.StatusClass = classServices.GetStatusTable();///借閱狀態
         }
     }
 }

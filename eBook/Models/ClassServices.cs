@@ -23,9 +23,8 @@ namespace eBook.Models
         public List<SelectListItem> GetClassTable()
         {
             DataTable dt = new DataTable();
-            string sql = @"SELECT BOOK_CLASS_ID
-                              ,BOOK_CLASS_NAME
-                          FROM GSSWEB.dbo.BOOK_CLASS";
+            string sql = @"SELECT BOOK_CLASS_ID as CODE_ID,BOOK_CLASS_NAME as CODE_NAME
+                          FROM BOOK_CLASS";
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))///using可以確保程式碼結束該區塊時，自動關閉連線
             {
                 ///開啟connection
@@ -46,34 +45,14 @@ namespace eBook.Models
         }
 
         /// <summary>
-        /// Map 圖書類別指定形式
-        /// </summary>
-        /// <returns></returns>
-        private List<SelectListItem> MapCodeData(DataTable dt)
-        {
-            List<SelectListItem> result = new List<SelectListItem>();
-            foreach (DataRow row in dt.Rows)
-            {
-                result.Add(new SelectListItem()
-                {
-                    Text = row["BOOK_CLASS_ID"].ToString() + '-' + row["BOOK_CLASS_NAME"].ToString(),
-                    Value = row["BOOK_CLASS_ID"].ToString()
-                });
-            }
-            return result;
-        }
-
-        /// <summary>
         /// 取得借閱人中文及英文名稱 
         /// </summary>
         /// <returns></returns>
         public List<SelectListItem> GetKeeperTable()
         {
             DataTable dt = new DataTable();
-            string sql = @"SELECT USER_ID
-                              ,USER_CNAME
-                              ,USER_ENAME
-                          FROM GSSWEB.dbo.MEMBER_M";
+            string sql = @"SELECT USER_ID as CODE_ID, ( USER_ENAME + '(' + USER_CNAME + ')' ) as CODE_NAME
+                           FROM MEMBER_M";
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))///using可以確保程式碼結束該區塊時，自動關閉連線
             {
                 ///開啟connection
@@ -90,25 +69,7 @@ namespace eBook.Models
                 conn.Close();///關閉connection
             }
 
-            return this.MapKeeperData(dt);///MapCodeData 拆解字串
-        }
-        
-        /// <summary>
-        /// Map 借閱人指定形式 
-        /// </summary>
-        /// <returns></returns>
-        private List<SelectListItem> MapKeeperData(DataTable dt)
-        {
-            List<SelectListItem> result = new List<SelectListItem>();
-            foreach (DataRow row in dt.Rows)
-            {
-                result.Add(new SelectListItem()
-                {
-                    Text = row["USER_ENAME"].ToString() + '(' + row["USER_CNAME"].ToString() + ')',
-                    Value = row["USER_ID"].ToString()
-                });
-            }
-            return result;
+            return this.MapCodeData(dt);///MapCodeData 拆解字串
         }
 
         /// <summary>
@@ -121,7 +82,8 @@ namespace eBook.Models
             string sql = @"SELECT CODE_TYPE
                               ,CODE_ID
                               ,CODE_NAME
-                          FROM GSSWEB.dbo.BOOK_CODE";
+                          FROM BOOK_CODE
+                          WHERE ( CODE_TYPE = 'BOOK_STATUS' )";
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))///using可以確保程式碼結束該區塊時，自動關閉連線
             {
                 ///開啟connection
@@ -138,14 +100,14 @@ namespace eBook.Models
                 conn.Close();///關閉connection
             }
 
-            return this.MapStatusData(dt);///MapCodeData 拆解字串
+            return this.MapCodeData(dt);///MapCodeData 拆解字串
         }
 
         /// <summary>
         /// Map 借閱狀態指定形式 
         /// </summary>
         /// <returns></returns>
-        private List<SelectListItem> MapStatusData(DataTable dt)
+        private List<SelectListItem> MapCodeData(DataTable dt)
         {
             List<SelectListItem> result = new List<SelectListItem>();
             foreach (DataRow row in dt.Rows)

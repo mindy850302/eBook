@@ -50,3 +50,7 @@ c:\users\mindy\onedrive\documents\visual studio 2015\Projects\eBook\eBook\bin\zh
 c:\users\mindy\onedrive\documents\visual studio 2015\Projects\eBook\eBook\bin\zh-Hant\System.Web.Mvc.resources.dll
 c:\users\mindy\onedrive\documents\visual studio 2015\Projects\eBook\eBook\obj\Debug\eBook.dll
 c:\users\mindy\onedrive\documents\visual studio 2015\Projects\eBook\eBook\obj\Debug\eBook.pdb
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook\bin\PagedList.dll
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook\bin\PagedList.Mvc.dll
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook\bin\PagedList.xml
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook\bin\PagedList.Mvc.xml

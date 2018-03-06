@@ -27,20 +27,20 @@ namespace eBook.Models
         public int InsertBook(Models.Book book)
         {
             ///Select SCOPE_IDENTITY() ->取得insert 的Book id
-            string sql = @" INSERT INTO [dbo].[BOOK_DATA]
-                                   ([BOOK_NAME],[BOOK_CLASS_ID]
-                                   ,[BOOK_AUTHOR],[BOOK_BOUGHT_DATE]
-                                   ,[BOOK_PUBLISHER],[BOOK_NOTE]
-                                   ,[BOOK_STATUS],[BOOK_KEEPER]
-                                   ,[CREATE_DATE],[CREATE_USER]
-                                   ,[MODIFY_DATE],[MODIFY_USER])
+            string sql = @" INSERT INTO BOOK_DATA
+                                   ( BOOK_NAME , BOOK_CLASS_ID
+                                   , BOOK_AUTHOR , BOOK_BOUGHT_DATE
+                                   , BOOK_PUBLISHER , BOOK_NOTE
+                                   , BOOK_STATUS , BOOK_KEEPER
+                                   , CREATE_DATE , CREATE_USER
+                                   , MODIFY_DATE , MODIFY_USER )
                              VALUES
-                                   (@BookName,@BookClassId
-                                   ,@BookAuthor,@BookBoughtDate
-                                   ,@BookPublisher,@BookNote
-                                   ,@BookStatus,@BookKeeper
-                                   ,@CreateDate,@CreateUser
-                                   ,@ModifyDate,@ModifyUser)
+                                   ( @BookName , @BookClassId
+                                   , @BookAuthor , @BookBoughtDate
+                                   , @BookPublisher , @BookNote
+                                   , @BookStatus , @BookKeeper
+                                   , @CreateDate , @CreateUser
+                                   , @ModifyDate , @ModifyUser )
 						Select SCOPE_IDENTITY()";
 
             int BookId;
@@ -84,22 +84,22 @@ namespace eBook.Models
 	                          ,a.BOOK_CLASS_ID , b.BOOK_CLASS_NAME as CLASS_NAME
                               ,a.BOOK_AUTHOR , CONVERT( varchar(12), a.BOOK_BOUGHT_DATE, 111) as BOOK_BOUGHT_DATE
                               ,a.BOOK_PUBLISHER , a.BOOK_NOTE
-	                          ,a.BOOK_STATUS , c.CODE_NAME as STATUS_NAME
+	                          ,a.BOOK_STATUS , c.CODE_TYPE , c.CODE_NAME as STATUS_NAME
                               ,a.BOOK_KEEPER , d.USER_ENAME ,d.USER_CNAME
                               ,a.CREATE_DATE , a.CREATE_USER
                               ,a.MODIFY_DATE , a.MODIFY_USER
-                          FROM GSSWEB.dbo.BOOK_DATA as a
+                          FROM BOOK_DATA as a
                           Left JOIN BOOK_CLASS as b
 	                        ON a.BOOK_CLASS_ID = b.BOOK_CLASS_ID
                           Left JOIN BOOK_CODE as c
 	                        ON a.BOOK_STATUS = c.CODE_ID
                           Left JOIN MEMBER_M as d
 	                        ON a.BOOK_KEEPER = d.USER_ID
-                        WHERE (a.BOOK_NAME LIKE '%' + @BookName + '%') AND 
-                              (a.BOOK_NAME != '' ) AND 
-	                          (a.BOOK_CLASS_ID LIKE '%'+ @BookClassId + '%') AND
-	                          (a.BOOK_KEEPER LIKE '%'+ @BookKeeper + '%') AND
-	                          (a.BOOK_STATUS LIKE '%' + @BookStatus + '%')
+                        WHERE (a.BOOK_NAME LIKE '%' + @BookName + '%' ) AND 
+	                          (a.BOOK_CLASS_ID = @BookClassId OR @BookClassId = '' ) AND
+	                          (a.BOOK_KEEPER = @BookKeeper OR @BookKeeper = '' ) AND
+	                          (a.BOOK_STATUS = @BookStatus OR @BookStatus = '' ) AND
+                              (c.CODE_TYPE = 'BOOK_STATUS')
                         ORDER BY BOOK_BOUGHT_DATE DESC
                         ";
 
@@ -156,7 +156,7 @@ namespace eBook.Models
         {
             try
             {
-                string sql = "Delete FROM GSSWEB.dbo.BOOK_DATA Where BOOK_ID=@BookId";
+                string sql = "Delete FROM BOOK_DATA Where BOOK_ID=@BookId";
                 using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
                 {
                     conn.Open();
@@ -235,18 +235,18 @@ namespace eBook.Models
         /// <returns></returns>
         public int UpdateBook(Models.Book book)
         {
-            string sql = @" UPDATE [dbo].[BOOK_DATA]
+            string sql = @" UPDATE BOOK_DATA
                             SET
-                                    [BOOK_NAME] =  @BookName 
-                                   ,[BOOK_CLASS_ID] = @BookClassId
-                                   ,[BOOK_AUTHOR] = @BookAuthor
-                                   ,[BOOK_BOUGHT_DATE] =  @BookBoughtDate 
-                                   ,[BOOK_PUBLISHER] = @BookPublisher 
-                                   ,[BOOK_NOTE] = @BookNote
-                                   ,[BOOK_STATUS] =  @BookStatus 
-                                   ,[BOOK_KEEPER] = @BookKeeper
-                                   ,[MODIFY_DATE] = @ModifyDate
-                            WHERE [dbo].[BOOK_DATA].[BOOK_ID] = @BookId";
+                                    BOOK_NAME =  @BookName 
+                                   ,BOOK_CLASS_ID = @BookClassId
+                                   ,BOOK_AUTHOR = @BookAuthor
+                                   ,BOOK_BOUGHT_DATE =  @BookBoughtDate 
+                                   ,BOOK_PUBLISHER = @BookPublisher 
+                                   ,BOOK_NOTE = @BookNote
+                                   ,BOOK_STATUS =  @BookStatus 
+                                   ,BOOK_KEEPER = @BookKeeper
+                                   ,MODIFY_DATE = @ModifyDate
+                            WHERE BOOK_DATA.BOOK_ID = @BookId";
 
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
             {
