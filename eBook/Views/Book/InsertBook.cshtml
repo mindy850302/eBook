@@ -1,77 +1,55 @@
-﻿@model eBook.Models.Book
-
-@{
-    ViewBag.Title = "新增書籍";
-}
-
+﻿
 <h2>新增書籍</h2>
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.BOOK_ID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BOOK_ID, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BOOK_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
+<form id="InsertBookForm" >
 
+    <div class="form-horizontal">
         <!--書籍名稱-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_NAME, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10"> 
-                @Html.EditorFor(model => model.BOOK_NAME, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BOOK_NAME, "", new { @class = "text-danger" })
+            <label class="control-label col-md-2" for="BOOK_NAME">書籍名稱</label>
+            <div class="col-md-10">
+                <input class="k-textbox" id="BOOK_NAME" name="BOOK_NAME" type="text" required  validationMessage ="請輸入書籍名稱"/>
+
             </div>
         </div>
 
         <!--書籍作者-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_AUTHOR, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_AUTHOR">書籍作者</label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.BOOK_AUTHOR, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BOOK_AUTHOR, "", new { @class = "text-danger" })
+                <input class="k-textbox" data-val="true" id="BOOK_AUTHOR" name="BOOK_AUTHOR" type="text" required validationMessage ="請輸入書籍作者" />
             </div>
         </div>
 
         <!--出版商-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_PUBLISHER, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_PUBLISHER">出版商</label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.BOOK_PUBLISHER, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BOOK_PUBLISHER, "", new { @class = "text-danger" })
+                <input class="k-textbox" data-val="true" id="BOOK_PUBLISHER" name="BOOK_PUBLISHER" type="text" required  validationMessage ="請輸入出版商"/>
             </div>
         </div>
 
         <!--內容簡介-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_NOTE, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_NOTE">內容簡介</label>
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.BOOK_NOTE,  new { @class = "form-control" } )
-                @Html.ValidationMessageFor(model => model.BOOK_NOTE, "", new { @class = "text-danger" })
+                <textarea class="k-textbox" cols="20" id="BOOK_NOTE" name="BOOK_NOTE" rows="4" required  validationMessage ="請輸入內容簡介"></textarea>
             </div>
         </div>
 
         <!--購書日期-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_BOUGHT_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_BOUGHT_DATE">購書日期</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BOOK_BOUGHT_DATE, new { @type = "Date", @style = "text-align:left", @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BOOK_BOUGHT_DATE, "", new { @class = "text-danger" })
+                <input type="text" data-role='datepicker' data-type="date" class="form-control" id="BOOK_BOUGHT_DATE" name="BOOK_BOUGHT_DATE" style="text-align:left" required  validationMessage ="請輸入購入日期"/>
             </div>
         </div>
 
         <!--書籍分類-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_CLASS_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_CLASS_ID">圖書類別</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.BOOK_CLASS_ID, (List<SelectListItem>)ViewBag.BookClass,"請選擇", new { @class = "form-control"})
-                @Html.ValidationMessageFor(model => model.BOOK_CLASS_ID, "", new { @class = "text-danger" })
+                <input id="BookClassId" name="BOOK_CLASS_ID" required  validationMessage ="請輸入圖書類別"/>
             </div>
         </div>
         <div class="form-group">
@@ -80,8 +58,83 @@
             </div>
         </div>
     </div>
-}
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+</form>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#BOOK_BOUGHT_DATE").kendoDatePicker({
+                format:"yyyy/MM/dd",
+                max:new Date()
+            });
+        });
+
+        // Dropdownlist修改成method 呼叫
+        var bookClass = $.ajax({
+            type: "GET",
+            url: "/Book/GetDropdownList",
+            data: "type=BookClass",
+            dataType: "json",
+            success: function (response) {
+                setBookClassList(response);
+                console.log("Get BookClass dropdownlist data .")
+            }
+        });
+        //BookClass DropdownList
+        function setBookClassList(drpData) {
+            $('#BookClassId').kendoComboBox({
+                dataTextField: "Text",
+                dataValueField: "Value",
+                dataSource: JSON.parse(drpData),
+                filter: "contains",
+                suggest: true,
+                index: 0
+            });
+
+            //$("#InsertBookForm").kendoVaildator({
+            //    messages: {
+            //        required: "此為必填欄位!"
+            //        }
+            //});
+            var validator = $("#InsertBookForm").kendoValidator({
+                rules: {
+                    datepicker: function (input) {
+                        if (input.is("[data-role=datetimepicker]")) {
+                            return input.data("kendoDateTimePicker").value();
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+            }).data("kendoValidator");
+            $("form").submit(function(event) {
+                event.preventDefault();
+                if (validator.validate()) {
+
+                    var bookModel = {
+                        BOOK_NAME: $('#BOOK_NAME').val(),
+                        BOOK_AUTHOR: $('#BOOK_AUTHOR').val(),
+                        BOOK_PUBLISHER: $('#BOOK_PUBLISHER').val(),
+                        BOOK_NOTE: $('#BOOK_NOTE').val(),
+                        BOOK_BOUGHT_DATE: $('#BOOK_BOUGHT_DATE').val(),
+                        BOOK_CLASS_ID: $('#BookClassId').val(),
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/Book/InsertBook",
+                        data: bookModel,
+                        dataType: "json",
+                        success: function (response) {
+                            alert("存檔成功!");
+                            window.location.pathname = "/Book/UpdateBook/" + response;
+                        }
+                    });
+                }
+            });
+        }
+
+    </script>
+
+
+    <div>
+        <a href="/Book">Back to List</a>
+    </div>

@@ -110,6 +110,11 @@ namespace eBook.Models
         private List<SelectListItem> MapCodeData(DataTable dt)
         {
             List<SelectListItem> result = new List<SelectListItem>();
+            result.Add(new SelectListItem()
+            {
+                Text = "請選擇",
+                Value = ""
+            });
             foreach (DataRow row in dt.Rows)
             {
                 result.Add(new SelectListItem()
@@ -118,6 +123,7 @@ namespace eBook.Models
                     Value = row["CODE_ID"].ToString()
                 });
             }
+            
             return result;
         }
     }

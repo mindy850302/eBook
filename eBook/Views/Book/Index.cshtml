@@ -1,20 +1,15 @@
-﻿@model eBook.Models.BookSearchArg
-
-@{
-    ViewBag.Title = "圖書資訊";
-}
-
+﻿
 <h2>圖書資訊查詢</h2>
 
-@using (Html.BeginForm("Index", "Book", FormMethod.Post, new { id = "Form1" }))
-{
-    <div class="form-horizontal">
 
+
+@*<form action="/Book" id="Form1" method="post">*@
+    <div class="form-horizontal">
         <!--書籍名稱-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2">書籍名稱</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BookName, new { @class = "form-control" })
+                <input type="text" class="k-textbox" name="BookName" id="BookName"/>
             </div>
         </div>
 
@@ -22,15 +17,15 @@
         <div class="form-group">
             <label class="control-label col-md-2">圖書類別</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.BookClassId, (List<SelectListItem>)ViewBag.BookClass, "請選擇", new { @class = "form-control" })
+                <input id="BookClassId" name="BookClassId"/>
             </div>
         </div>
-        
+
         <!--借閱人-->
         <div class="form-group">
             <label class="control-label col-md-2">借閱人</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.BookKeeper, (List<SelectListItem>)ViewBag.KeeperClass, "請選擇", new { @class = "form-control" })
+                <input id="BookKeeper" name="BookKeeper" />
             </div>
         </div>
 
@@ -38,7 +33,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">借閱狀態</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.BookStatus, (List<SelectListItem>)ViewBag.StatusClass, "請選擇", new { @class = "form-control" })
+                <input id="BookStatus" name="BookStatus" />
             </div>
         </div>
 
@@ -46,100 +41,220 @@
             <div class="col-md-2">
             </div>
             <div class="col-md-10">
-                <input type="submit" value="查詢" class="btn btn-default"/>
-                <a href="/Book/InsertBook" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新增書籍</a>
+                <button class="btn btn-default btnSearch">查詢</button>
+                <a id = "insertBook" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新增書籍</a>
                 <a href="/Book/Index" class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span>清除</a>
-                @*@Html.ActionLink("新增書籍", "InsertBook")<!--顯示 "新增書籍"超連結-->
-                @Html.ActionLink("清除", "Index")<!--顯示 "清除"超連結-->*@
+
             </div>
         </div>
-
-
-        @if (ViewBag.SearchResult != null)
-        {
-            <table class="table table-bordered table-striped col-md-10">
-                <thead>
-                    <tr>
-                        <th>圖書類別</th>
-                        <th>書名</th>
-                        <th>購書日期</th>
-                        <th>借閱狀態</th>
-                        <th>借閱人</th>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in (List<eBook.Models.Book>)ViewBag.SearchResult)
-                    {
-                        <tr id='@item.BOOK_ID'>
-                            <td>@item.BOOK_CLASS_ID</td>
-                            @*<td>@Html.ActionLink(item.BOOK_NAME, "DetailOfBook", new { id = item.BOOK_ID })</td>*@
-                            <td>@item.BOOK_NAME</td>
-                            <td>@item.BOOK_BOUGHT_DATE</td>
-                            <td>@item.BOOK_STATUS</td>
-                            @if (item.BOOK_KEEPER.Equals("()"))
-                            {
-                                <td></td>
-                            }
-                            else
-	                        {
-                                <td>@item.BOOK_KEEPER</td>
-
-                            }
-
-                            <td><a href="/Book/UpdateBook/@item.BOOK_ID" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>修改</a></td>@*@Html.ActionLink("修改", "UpdateBook", new { id = item.BOOK_ID }, new { @style = "color:#000000" })*@
-                            @if (@item.BOOK_STATUS.Equals("可以借出") || @item.BOOK_STATUS.Equals("不可借出"))
-                            {
-                                <td>
-                                    <a class="btnDelete" href="#"><button class="btn btn-default"><span class="glyphicon glyphicon-trash">刪除</span> </button> </a>
-                                    <input class="hidBookId" type="hidden" value='@item.BOOK_ID' />
-                                </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <a class="btnDelete" href="#"><button class="btn btn-default"><span class="glyphicon glyphicon-trash">刪除</span> </button> </a>
-                                    <input class="hidBookId" type="hidden" value='No' />
-                                </td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
     </div>
-    <script>
-        $(document).ready(function () {
-            //控制書籍刪除
-            $('.btnDelete').click(function (e) {
-                var value = $(this).next().val();
-                if (value === "No") {
-                    alert("已借出的書籍不可刪除! 請先修改狀態");
-                }
-                else
-                {
-                    var choose = confirm("是否刪除 ? ");
-                    if (choose == true) {
-                        var tr = $(this).closest('tr')
-                        //alert("value : " + $(this).next().val());
-                        $.ajax({
-                            type: "POST", //POST or GET
-                            url: "/Book/DeleteBook",// 發送請求的url
-                            data: "bookId=" + $(this).next().val(),//傳給server 的data
-                            dataType: "json", //傳回的數據類型 ,可為xml,html,text....
-                            success: function (response) {
-                                $(tr).remove();
-                                alert("刪除成功");
-                            }, error: function (error) {
-                                alert("系統發生錯誤");
-                            }
-                        });
+@*</form>*@
+
+        <div id="grid">
+        </div>
+        <script>
+            $(document).ready(function () {
+
+                // Dropdownlist修改成method 呼叫
+                var bookClass = $.ajax({
+                    type: "GET",
+                    url: "/Book/GetDropdownList",
+                    data: "type=BookClass",
+                    dataType: "json",
+                    success: function (response) {
+                        setBookClassList(response);
+                        console.log("Get BookClass dropdownlist data .")
                     }
+                });
+
+                var keeperClass = $.ajax({
+                    type: "GET",
+                    url: "/Book/GetDropdownList",
+                    data: "type=KeeperClass",
+                    dataType: "json",
+                    success: function (response) {
+                        setKeeperClassList(response);
+                        console.log("Get KeeperClass dropdownlist data .")
+                    }
+                });
+
+                var statusClass = $.ajax({
+                    type: "GET",
+                    url: "/Book/GetDropdownList",
+                    data: "type=StatusClass",
+                    dataType: "json",
+                    success: function (response) {
+                        setBookStatusList(response);
+                        console.log("Get StatusClass dropdownlist data .")
+                    }
+                });
+
+                //BookClass DropdownList
+                function setBookClassList(drpData) {
+                    $('#BookClassId').kendoComboBox({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: JSON.parse(drpData),
+                        filter: "contains",
+                        suggest: true,
+                        index: 0
+                    });
                 }
+
+                //KeeperClass DropdownList
+                function setKeeperClassList(drpData) {
+                    $('#BookKeeper').kendoComboBox({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: JSON.parse(drpData),
+                        filter: "contains",
+                        suggest: true,
+                        index: 0
+                    });
+                }
+
+                //KeeperClass DropdownList
+                function setBookStatusList(drpData) {
+                    $('#BookStatus').kendoComboBox({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: JSON.parse(drpData),
+                        filter: "contains",
+                        suggest: true,
+                        index: 0
+                    });
+                }
+                
+                //利用ajax呼叫BookController 的Index[HttpPOST]
+                $('.btnSearch').click(function (e) {
+                    e.preventDefault();
+                    //取得搜尋字串並建成Model
+                    var bookSearchArgModel = {
+                        BookName: $('#BookName').val(),
+                        BookClassId: $('#BookClassId').val(),
+                        BookKeeper: $('#BookKeeper').val(),
+                        BookStatus: $('#BookStatus').val()
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Book/Index",
+                        data: bookSearchArgModel,
+                        dataType: "json",
+                        success: function (response) {
+                            //console.log(response);
+                            gridDisplay(response);
+                        }
+                    });
+                });
+
+                function gridDisplay(result) {
+                    //查詢結果亂碼轉換
+                    var formatJson = result.replace(/&quot;/g, '"');
+
+                    //console.log(formatJson);
+                    //把資料轉換成JSON格式
+                    var resultByCondition = JSON.parse(formatJson);
+                    //套用到grid格式
+                    $("#grid").kendoGrid({
+                        dataSource: {
+                            data: resultByCondition,
+                            schema: {
+                                model: {
+                                    fields: {
+                                        "BOOK_ID" : { type : "number" },
+                                        "BOOK_CLASS_ID": { type: "string" },
+                                        "BOOK_NAME": { type: "string" },
+                                        "BOOK_BOUGHT_DATE": { type: "string" },
+                                        "BOOK_STATUS": { type: "string" },
+                                        "BOOK_KEEPER": { type: "string" }
+                                    }
+                                }
+                            },
+                            pageSize: 20
+                        },
+                        height: 500,
+                        scrollable: true,
+                        sortable: true,
+                        filterable: true,
+                        pageable: {
+                            input: true,
+                            numeric: false
+                        },
+                        columns: [
+                            { field: "BOOK_ID", hidden : true },
+                            { field: "BOOK_CLASS_ID", title: "圖書類別" },
+                            { field: "BOOK_NAME", title: "書籍名稱" },
+                            { field: "BOOK_BOUGHT_DATE", title: "購入日期" },
+                            { field: "BOOK_STATUS", title: "借閱狀態" },
+                            { field: "BOOK_KEEPER", title: "借閱人" },
+                            { command : [
+                                {
+                                    name:"edit",
+                                    click: showUpdate
+                                },  
+                                {
+                                    name:"destroy"
+                                }], title:"&nbsp;"}
+                        ]
+                    });
+                }
+                //跳轉更新書籍頁面
+                function showUpdate(e) {
+                    e.preventDefault();
+                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                    window.location.pathname = "/Book/UpdateBook/" + dataItem.BOOK_ID;
+                    console.log(dataItem.BOOK_ID);
+                }
+
+                //跳轉新增書籍頁面
+                $('#insertBook').click(function (e) {
+                    window.location.pathname = "/Book/InsertBook";
+                });
+                
+                function showUpdate(e) {
+                    e.preventDefault();
+                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                    window.location.pathname = "/Book/UpdateBook/" + dataItem.BOOK_ID;
+                    console.log(dataItem.BOOK_ID);
+                }
+
+                //控制書籍刪除
+                $('.btnDelete').click(function (e) {
+                    var value = $(this).next().val();
+                    if (value === "No") {
+                        alert("已借出的書籍不可刪除! 請先修改狀態");
+                    }
+                    else {
+                        var choose = confirm("是否刪除 ? ");
+                        if (choose == true) {
+                            var tr = $(this).closest('tr')
+                            //alert("value : " + $(this).next().val());
+                            $.ajax({
+                                type: "POST", //POST or GET
+                                url: "/Book/DeleteBook",// 發送請求的url
+                                data: "bookId=" + $(this).next().val(),//傳給server 的data
+                                dataType: "json", //傳回的數據類型 ,可為xml,html,text....
+                                success: function (response) {
+                                    $(tr).remove();
+                                    alert("刪除成功");
+                                }, error: function (error) {
+                                    alert("系統發生錯誤");
+                                }
+                            });
+                        }
+                    }
+                });
             });
-        });
-        
-    </script>
-}
+
+        </script>
+@*<style type="text/css">
+    td{
+        max-width:150px;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        overflow:hidden;
+    } 
+</style>*@
+
 

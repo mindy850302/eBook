@@ -85,7 +85,11 @@ namespace eBook.Models
                               ,a.BOOK_AUTHOR , CONVERT( varchar(12), a.BOOK_BOUGHT_DATE, 111) as BOOK_BOUGHT_DATE
                               ,a.BOOK_PUBLISHER , a.BOOK_NOTE
 	                          ,a.BOOK_STATUS , c.CODE_TYPE , c.CODE_NAME as STATUS_NAME
-                              ,a.BOOK_KEEPER , d.USER_ENAME ,d.USER_CNAME
+                              ,a.BOOK_KEEPER , case(a.BOOK_STATUS) 
+							  WHEN 'A' THEN ' '
+							  WHEN 'U' THEN ' '
+							  ELSE d.USER_ENAME + '(' + d.USER_CNAME + ')'
+							  END as USER_NAME
                               ,a.CREATE_DATE , a.CREATE_USER
                               ,a.MODIFY_DATE , a.MODIFY_USER
                           FROM BOOK_DATA as a
@@ -135,7 +139,7 @@ namespace eBook.Models
                     BOOK_CLASS_ID = row["CLASS_NAME"].ToString(),
                     BOOK_AUTHOR = row["BOOK_AUTHOR"].ToString(),
                     BOOK_BOUGHT_DATE = row["BOOK_BOUGHT_DATE"].ToString(),
-                    BOOK_KEEPER = row["USER_ENAME"].ToString() + '(' + row["USER_CNAME"].ToString() + ')',
+                    BOOK_KEEPER = row["USER_NAME"].ToString() ,
                     BOOK_NOTE = row["BOOK_NOTE"].ToString(),
                     BOOK_PUBLISHER = row["BOOK_PUBLISHER"].ToString(),
                     BOOK_STATUS = row["STATUS_NAME"].ToString(),

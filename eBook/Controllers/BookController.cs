@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using PagedList.Mvc;
 using PagedList;
+using System.Web.Script.Serialization;
 
 namespace eBook.Controllers
 {
@@ -16,22 +17,22 @@ namespace eBook.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            GetDropdownList();
-
             return View();
         }
 
         ///依查詢條件回傳結果
         [HttpPost()]
-        public ActionResult Index(Models.BookSearchArg arg )
+        public JsonResult Index(Models.BookSearchArg arg )
         {
             Models.BookServices bookService = new Models.BookServices();
 
-            ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);///回傳查詢結果
+            ///ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);回傳查詢結果
 
-            GetDropdownList();
+            //回傳JSON格式的查詢結果
+            var json = new JavaScriptSerializer();
+            var jsonArray = json.Serialize(bookService.GetBookByCondtioin(arg));
 
-            return View("Index");
+            return Json(jsonArray);
         }
 
         ///顯示新增書籍頁面
@@ -44,22 +45,13 @@ namespace eBook.Controllers
 
         ///執行新增書籍
         [HttpPost]
-        public ActionResult InsertBook(Models.Book book)
+        public JsonResult InsertBook(Models.Book book)
         {
             Models.BookServices bookServices = new Models.BookServices();
 
-            ///判斷是否符合驗證
-            if (ModelState.IsValid)
-            {
-                bookServices.InsertBook(book);
-                return RedirectToAction("Index", "Book");
-            }
-            else
-            {
-                ///下拉式選單資料
-                ViewBag.BookClass = classServices.GetClassTable();///圖書類別
-                return View();
-            }
+                int bookId = bookServices.InsertBook(book);
+
+                return Json(bookId);
         }
         
         ///顯示修改書籍頁面
@@ -188,12 +180,30 @@ namespace eBook.Controllers
             }
         }
 
-        public void GetDropdownList()
+        ///下拉式選單資料
+        [HttpGet]
+        public JsonResult GetDropdownList(string type)
         {
-            ///下拉式選單資料
-            ViewBag.BookClass = classServices.GetClassTable();///圖書類別
-            ViewBag.KeeperClass = classServices.GetKeeperTable();///借閱人
-            ViewBag.StatusClass = classServices.GetStatusTable();///借閱狀態
+            var json = new JavaScriptSerializer();
+            var jsonForClassArray = "";
+            switch (type)
+            {
+                case "BookClass":
+                    jsonForClassArray = json.Serialize(classServices.GetClassTable());
+                    break;
+
+                case "KeeperClass":
+                    jsonForClassArray = json.Serialize(classServices.GetKeeperTable());
+                    break;
+
+                case "StatusClass":
+                    jsonForClassArray = json.Serialize(classServices.GetStatusTable());
+                    break;
+                default:
+                    break;
+            }
+
+            return Json(jsonForClassArray, JsonRequestBehavior.AllowGet);
         }
     }
 }
