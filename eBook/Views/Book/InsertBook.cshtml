@@ -66,35 +66,10 @@
                 format:"yyyy/MM/dd",
                 max:new Date()
             });
-        });
+       
+            //call book class droplist function
+            var bookClass = ajaxForDropdownList("BookClassId");
 
-        // Dropdownlist修改成method 呼叫
-        var bookClass = $.ajax({
-            type: "GET",
-            url: "/Book/GetDropdownList",
-            data: "type=BookClass",
-            dataType: "json",
-            success: function (response) {
-                setBookClassList(response);
-                console.log("Get BookClass dropdownlist data .")
-            }
-        });
-        //BookClass DropdownList
-        function setBookClassList(drpData) {
-            $('#BookClassId').kendoComboBox({
-                dataTextField: "Text",
-                dataValueField: "Value",
-                dataSource: JSON.parse(drpData),
-                filter: "contains",
-                suggest: true,
-                index: 0
-            });
-        }
-            //$("#InsertBookForm").kendoVaildator({
-            //    messages: {
-            //        required: "此為必填欄位!"
-            //        }
-            //});
             var validator = $("#InsertBookForm").kendoValidator({
                 rules: {
                     datepicker: function (input) {
@@ -106,6 +81,7 @@
                     }
                 }
             }).data("kendoValidator");
+        //submit form action
             $("form").submit(function(event) {
                 event.preventDefault();
                 if (validator.validate()) {
@@ -130,7 +106,7 @@
                     });
                 }
             });
-
+        });
     </script>
 
 

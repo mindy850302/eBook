@@ -37,6 +37,7 @@
             </div>
         </div>
 
+        <!--查詢、新增、刪除按鈕-->
         <div class="form-group">
             <div class="col-md-2">
             </div>
@@ -55,75 +56,10 @@
         <script>
             $(document).ready(function () {
 
-                // Dropdownlist修改成method 呼叫
-                var bookClass = $.ajax({
-                    type: "GET",
-                    url: "/Book/GetDropdownList",
-                    data: "type=BookClass",
-                    dataType: "json",
-                    success: function (response) {
-                        setBookClassList(response);
-                        console.log("Get BookClass dropdownlist data .")
-                    }
-                });
-
-                var keeperClass = $.ajax({
-                    type: "GET",
-                    url: "/Book/GetDropdownList",
-                    data: "type=KeeperClass",
-                    dataType: "json",
-                    success: function (response) {
-                        setKeeperClassList(response);
-                        console.log("Get KeeperClass dropdownlist data .")
-                    }
-                });
-
-                var statusClass = $.ajax({
-                    type: "GET",
-                    url: "/Book/GetDropdownList",
-                    data: "type=StatusClass",
-                    dataType: "json",
-                    success: function (response) {
-                        setBookStatusList(response);
-                        console.log("Get StatusClass dropdownlist data .")
-                    }
-                });
-
-                //BookClass DropdownList
-                function setBookClassList(drpData) {
-                    $('#BookClassId').kendoComboBox({
-                        dataTextField: "Text",
-                        dataValueField: "Value",
-                        dataSource: JSON.parse(drpData),
-                        filter: "contains",
-                        suggest: true,
-                        index: 0
-                    });
-                }
-
-                //KeeperClass DropdownList
-                function setKeeperClassList(drpData) {
-                    $('#BookKeeper').kendoComboBox({
-                        dataTextField: "Text",
-                        dataValueField: "Value",
-                        dataSource: JSON.parse(drpData),
-                        filter: "contains",
-                        suggest: true,
-                        index: 0
-                    });
-                }
-
-                //StatusClass DropdownList
-                function setBookStatusList(drpData) {
-                    $('#BookStatus').kendoComboBox({
-                        dataTextField: "Text",
-                        dataValueField: "Value",
-                        dataSource: JSON.parse(drpData),
-                        filter: "contains",
-                        suggest: true,
-                        index: 0
-                    });
-                }
+                //set up BookClassId , BookKeeper , BookStatus DropdownList
+                var bookClass = ajaxForDropdownList("BookClassId");
+                var keeperClass = ajaxForDropdownList("BookKeeper");
+                var statusClass = ajaxForDropdownList("BookStatus");
                 
                 //利用ajax呼叫BookController 的Index[HttpPOST]
                 $('.btnSearch').click(function (e) {
@@ -135,7 +71,7 @@
                         BookKeeper: $('#BookKeeper').val(),
                         BookStatus: $('#BookStatus').val()
                     };
-
+                    //call ajax回傳資料
                     $.ajax({
                         type: "POST",
                         url: "/Book/Index",
@@ -148,6 +84,7 @@
                     });
                 });
 
+                //Display grid
                 function gridDisplay(result) {
                     //查詢結果亂碼轉換
                     var formatJson = result.replace(/&quot;/g, '"');
@@ -192,13 +129,17 @@
                                 {
                                     name:"edit",
                                     click: showUpdate
-                                },  
-                                {
-                                    name: "delete",
-                                    click: DeleteBookButtonClick
                                 }
                             ], title: "&nbsp;"
-                            }
+                            },
+                             {
+                                 command: [
+                                  {
+                                      name: "delete",
+                                      click: deleteBookButtonClick
+                                  }
+                                 ], title: "&nbsp;"
+                             }
 
                         ],
                         remove: function (e) {
@@ -208,7 +149,7 @@
                     });
                 } 
                 //刪除書籍列
-                function DeleteBookButtonClick(e) {
+                function deleteBookButtonClick(e) {
                     e.preventDefault();
                     var dataRow = this.dataItem($(e.currentTarget).closest("tr"));
                     console.log("book id is " + dataRow.BOOK_ID);

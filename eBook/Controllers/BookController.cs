@@ -13,7 +13,7 @@ namespace eBook.Controllers
     {
         Models.ClassServices classServices = new Models.ClassServices();
 
-        // GET: Book
+        /// 首頁
         [HttpGet]
         public ActionResult Index()
         {
@@ -28,7 +28,7 @@ namespace eBook.Controllers
 
             ///ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);回傳查詢結果
 
-            //回傳JSON格式的查詢結果
+            ///回傳JSON格式的查詢結果
             var json = new JavaScriptSerializer();
             var jsonArray = json.Serialize(bookService.GetBookByCondtioin(arg));
 
@@ -61,8 +61,13 @@ namespace eBook.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 取得更新頁面書籍資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult GetUpdateBook(String id)
+        public JsonResult GetUpdateBook(String id)
         {
             Models.BookServices bookServices = new Models.BookServices();
 
@@ -113,15 +118,18 @@ namespace eBook.Controllers
             var jsonForClassArray = "";
             switch (type)
             {
-                case "BookClass":
+                ///回傳圖書類別Data
+                case "BookClassId":
                     jsonForClassArray = json.Serialize(classServices.GetClassTable());
                     break;
 
-                case "KeeperClass":
+                ///回傳借閱人Data
+                case "BookKeeper":
                     jsonForClassArray = json.Serialize(classServices.GetKeeperTable());
                     break;
 
-                case "StatusClass":
+                ///回傳借閱狀態Data
+                case "BookStatus":
                     jsonForClassArray = json.Serialize(classServices.GetStatusTable());
                     break;
                 default:

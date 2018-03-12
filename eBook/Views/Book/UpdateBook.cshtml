@@ -62,6 +62,7 @@
             <div class="col-md-10">
                 <input id="BookStatus" name="BookStatus" required/>
             </div>
+            <input type="hidden" id="originalBookStatus" />
         </div>
 
         <!--借閱人-->
@@ -72,17 +73,18 @@
             </div>
        </div>
 
-
+        <!--儲存及刪除按鈕-->
         <div class="form-group">
             <div class="col-md-2"></div>
             <div class="col-md-2">
                 <button class="btn btn-default"><a href="/Book">Back to List</a></button>
             </div>
             <div class="col-md-2 ">
-                <input class="btnSave btn btn-default" value="儲存"  />
+                <input class="btnSave btn btn-default" value="儲存" />
             </div>
             <div class="col-md-2 ">
                 <button class="btnDelete btn btn-default" href="#">刪除</button>
+                <input type="hidden" id="hideBookId" />
             </div>
         </div>
     </div>
@@ -90,12 +92,63 @@
 </form>
 <script>
     $(document).ready(function () {
-        //取得網址
+        //get url
         var urlSplit = window.location.href.split("/");
-        //取得書籍編號
+        //get book ID
         var bookId = urlSplit[5];
-        $("#hidBookId").val(bookId);
+        //set book ID
+        $("#hideBookId").val(bookId);
 
+        //use ajax to get dropdownlist data
+        function ajaxForUpdateDropdownList(type, bookValue) {
+            $.ajax({
+                type: "GET",
+                url: "/Book/GetDropdownList",
+                data: "type=" + type,
+                dataType: "json",
+                success: function (response) {
+                    if (type === "BookStatus") {
+                        setBookStatusList(response, bookValue);
+                    }
+                    else {
+                        setUpdateClassList(response, type, bookValue);
+                    }
+                    console.log("Get " + type + " dropdownlist data .");
+                }
+            });
+        }
+
+        //setup update page's dropdownlist( keeper , bookClass )
+        function setUpdateClassList(drpData, type, bookValue) {
+            var idName = '#' + type;
+            console.log("drpData : " + drpData);
+            $(idName).kendoComboBox({
+                dataTextField: "Text",
+                dataValueField: "Value",
+                dataSource: JSON.parse(drpData),
+                filter: "contains",
+                suggest: true,
+                value: bookValue
+            });
+        }
+
+        //setup update page's dropdownlist - bookstatus
+        function setBookStatusList(drpData, bookValue) {
+            $('#BookStatus').kendoComboBox({
+                dataTextField: "Text",
+                dataValueField: "Value",
+                dataSource: JSON.parse(drpData),
+                filter: "contains",
+                suggest: true,
+                value: bookValue,
+                change: function (e) {
+                    var value = this.value();
+                    BookKeeperDisplay(value);
+                }
+            });
+        }
+
+        //Keeper display when status is "B" "C"
         function BookKeeperDisplay(choose) {
             if (choose === "A" || choose === "U") {
                 $('#BookKeeperDisplay').hide();
@@ -104,6 +157,8 @@
             }
         }
 
+
+       
         $.ajax({
             type: "GET",
             url: "/Book/GetUpdateBook/" + bookId,
@@ -118,168 +173,104 @@
                 $('#BOOK_BOUGHT_DATE').val(response.BOOK_BOUGHT_DATE);
                 $('#BOOK_CLASS_ID').val(response.BOOK_CLASS_ID);
                 $('#BOOK_STATUS').val(response.BOOK_STATUS);
+                $('#originalBookStatus').val(response.BOOK_STATUS);
                 BookKeeperDisplay(response.BOOK_STATUS);
                 $('#BOOK_KEEPER').val(response.BOOK_KEEPER);
-                // Dropdownlist修改成method 呼叫
-                var bookClass = $.ajax({
-                    type: "GET",
-                    url: "/Book/GetDropdownList",
-                    data: "type=BookClass",
-                    dataType: "json",
-                    success: function (response) {
-                        setBookClassList(response);
-                        console.log("Get BookClass dropdownlist data .")
-                    }
-                });
 
-                var keeperClass = "";
-                $.ajax({
-                    type: "GET",
-                    url: "/Book/GetDropdownList",
-                    data: "type=KeeperClass",
-                    dataType: "json",
-                    success: function (response) {
-                        keeperClass = response;
-                        setKeeperClassList(response);
-                        console.log("Get KeeperClass dropdownlist data .")
-                    }
-                });
+                //set up BookClassId , BookKeeper , BookStatus DropdownList
+                var bookClass = ajaxForUpdateDropdownList("BookClassId", response.BOOK_CLASS_ID);
+                var keeperClass = ajaxForUpdateDropdownList("BookKeeper", response.BOOK_KEEPER);
+                var statusClass = ajaxForUpdateDropdownList("BookStatus", response.BOOK_STATUS);
 
-                var statusClass = $.ajax({
-                    type: "GET",
-                    url: "/Book/GetDropdownList",
-                    data: "type=StatusClass",
-                    dataType: "json",
-                    success: function (response) {
-                        setBookStatusList(response);
-                        console.log("Get StatusClass dropdownlist data .")
-                    }
-                });
-
-                //BookClass DropdownList
-                function setBookClassList(drpData) {
-                    $('#BookClassId').kendoComboBox({
-                        dataTextField: "Text",
-                        dataValueField: "Value",
-                        dataSource: JSON.parse(drpData),
-                        filter: "contains",
-                        suggest: true,
-                        value: response.BOOK_CLASS_ID
-                    });
-                }
-
-                //KeeperClass DropdownList
-                function setKeeperClassList(drpData) {
-                    $('#BookKeeper').kendoComboBox({
-                        dataTextField: "Text",
-                        dataValueField: "Value",
-                        dataSource: JSON.parse(drpData),
-                        filter: "contains",
-                        suggest: true,
-                        enable:true,
-                        value: response.BOOK_KEEPER
-                    });
-                }
-                
-                //StatusClass DropdownList
-                function setBookStatusList(drpData) {
-                    $('#BookStatus').kendoComboBox({
-                        dataTextField: "Text",
-                        dataValueField: "Value",
-                        dataSource: JSON.parse(drpData),
-                        filter: "contains",
-                        suggest: true,
-                        value: response.BOOK_STATUS,
-                        change: function (e) {
-                            var value = this.value();
-                            BookKeeperDisplay(value);
-                        }
-                    });
-                }
             }
         });
         //transfor input to DatePicker
-            $("#BOOK_BOUGHT_DATE").kendoDatePicker({
-                format: "yyyy/MM/dd",
-                max: new Date()
-            });
-            var validator = $("#UpdateBookForm").kendoValidator({
-                rules: {
-                    datepicker: function (input) {
-                        if (input.is("[data-role=datetimepicker]")) {
-                            return input.data("kendoDateTimePicker").value();
-                        } else {
-                            return true;
-                        }
+        $("#BOOK_BOUGHT_DATE").kendoDatePicker({
+            format: "yyyy/MM/dd",
+            max: new Date()
+        });
+
+        //check data is vaildator or not
+        var validator = $("#UpdateBookForm").kendoValidator({
+            rules: {
+                datepicker: function (input) {
+                    if (input.is("[data-role=datetimepicker]")) {
+                        return input.data("kendoDateTimePicker").value();
+                    } else {
+                        return true;
                     }
                 }
-            }).data("kendoValidator");
+            }
+        }).data("kendoValidator");
 
         //Save update book
-            $('.btnSave').click(function (event) {
-                event.preventDefault();
-                var status = $('#BookStatus').val();
-                if (status === "A" || status === "U") {
-                    $('#BookKeeper').attr("required", false);
-                }
-                else {
-                    $('#BookKeeper').attr("required", true);
-                }
-                if (validator.validate()) {
-                    var bookModel = {
-                        BOOK_ID: bookId,
-                        BOOK_NAME: $('#BOOK_NAME').val(),
-                        BOOK_AUTHOR: $('#BOOK_AUTHOR').val(),
-                        BOOK_PUBLISHER: $('#BOOK_PUBLISHER').val(),
-                        BOOK_NOTE: $('#BOOK_NOTE').val(),
-                        BOOK_BOUGHT_DATE: $('#BOOK_BOUGHT_DATE').val(),
-                        BOOK_CLASS_ID: $('#BookClassId').val(),
-                        BOOK_STATUS: $('#BookStatus').val(),
-                        BOOK_KEEPER: $('#BookKeeper').val()
-                    };
-                    console.log(bookModel);
-                    $.ajax({
-                        type: "POST",
-                        url: "/Book/UpdateBook",
-                        data: bookModel,
-                        dataType: "json",
-                        success: function (response) {
-                            alert("更新成功!");
-                            window.location.pathname = "/Book";
-                        },
-                        error: function (response) {
-                            alert("更新失敗!");
-                        }
-                    });
-                }
-            });
+        $('.btnSave').click(function (event) {
+            event.preventDefault();
+            var status = $('#BookStatus').val();
+            if (status === "A" || status === "U") {
+                $('#BookKeeper').attr("required", false);
+            }
+            else {
+                $('#BookKeeper').attr("required", true);
+            }
+            if (validator.validate()) {
+                var bookModel = {
+                    BOOK_ID: bookId,
+                    BOOK_NAME: $('#BOOK_NAME').val(),
+                    BOOK_AUTHOR: $('#BOOK_AUTHOR').val(),
+                    BOOK_PUBLISHER: $('#BOOK_PUBLISHER').val(),
+                    BOOK_NOTE: $('#BOOK_NOTE').val(),
+                    BOOK_BOUGHT_DATE: $('#BOOK_BOUGHT_DATE').val(),
+                    BOOK_CLASS_ID: $('#BookClassId').val(),
+                    BOOK_STATUS: $('#BookStatus').val(),
+                    BOOK_KEEPER: $('#BookKeeper').val()
+                };
+                console.log(bookModel);
+                $.ajax({
+                    type: "POST",
+                    url: "/Book/UpdateBook",
+                    data: bookModel,
+                    dataType: "json",
+                    success: function (response) {
+                        alert("更新成功!");
+                        window.location.pathname = "/Book";
+                    },
+                    error: function (response) {
+                        alert("更新失敗!");
+                    }
+                });
+            }
+        });
 
         //Delete Book
-            $('.btnDelete').click(function (e) {
-                var status = $('#SatausOfDelete').val();
-                var value = bookId;
-                if ($('#BookStatus').val() === "B" || $('#BookStatus').val()==="C") {
-                    alert("已借出的書籍不可刪除! 請先修改狀態 ");
-                }
-                else
-                {
-                    var choose = confirm("是否刪除 ? ");
-                    if (choose == true) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/Book/DeleteBook",
-                            data: "bookId=" + bookId,
-                            dataType: "json",
-                            success: function (response) {
-                                alert("刪除成功");
-                                $(location).attr('href', '/Book');
-                            }
-                        });
-                        
-                    }
-                }
+        $('.btnDelete').click(function (e) {
+            var value = bookId;
+            console.log("Book ID : " + bookId);
+            console.log("Book ID(hidden): " + $("#hideBookId").val());
 
-            });
+            //check original book status
+            if ($('#originalBookStatus').val() === "B" || $('#originalBookStatus').val() === "C") {
+                alert("已借出的書籍不可刪除! 請先修改狀態 ");
+                window.location.pathname = "/Book/UpdateBook/" + bookId;
+            }
+            else {
+                var choose = confirm("是否刪除 ? ");
+                if (choose == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Book/DeleteBook",
+                        data: "bookId=" + bookId,
+                        dataType: "json",
+                        success: function (response) {
+                            alert("刪除成功");
+                            $(location).attr('href', '/Book');
+                        }
+                    });
+
+                }
+            }
+
+        });
         });
 
 </script>

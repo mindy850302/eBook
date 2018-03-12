@@ -256,7 +256,7 @@ namespace eBook.Models
         /// 更新書籍的資料
         /// </summary>
         /// <returns></returns>
-        public int UpdateBook(Models.Book book)
+        public void UpdateBook(Models.Book book)
         {
             string sql = @" 
                          BEGIN TRY   
@@ -302,7 +302,6 @@ namespace eBook.Models
                 conn.Close();
             }
 
-            return 1;
         }
 
     }

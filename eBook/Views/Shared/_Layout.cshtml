@@ -51,6 +51,34 @@
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
+    <script>
+        // Dropdownlist set up ( insert & index)
+        function ajaxForDropdownList(type) {
+            $.ajax({
+                type: "GET",
+                url: "/Book/GetDropdownList",
+                data: "type=" + type,
+                dataType: "json",
+                success: function (response) {
+                    setClassList(type, response);
+                    console.log("Get " + type + " dropdownlist data .");
+                }
+            });
+        }
+        
+        function setClassList(type, drpData) {
+            var idName = '#' + type;
+            $(idName).kendoComboBox({
+                dataTextField: "Text",
+                dataValueField: "Value",
+                dataSource: JSON.parse(drpData),
+                filter: "contains",
+                suggest: true,
+                index: 0
+            });
+        }
+        
+    </script>
 
 </body>
 </html>
