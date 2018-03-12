@@ -1,163 +1,264 @@
-﻿@model eBook.Models.Book
-
-@{
-    ViewBag.Title = "UpdateBook";
-}
-
+﻿
 <h2>UpdateBook</h2>
 
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
+<form id="UpdateBookForm">
         <h4>Book</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.BOOK_ID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BOOK_ID , new { Value = @ViewBag.TheUpdateBook.BOOK_ID,@class = "form-control"  })
-                @Html.ValidationMessageFor(model => model.BOOK_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-        <!--隱藏書籍ID-->
-        @Html.TextBoxFor(model => model.BOOK_ID, new { Value = @ViewBag.TheUpdateBook.BOOK_ID, @class = "form-control", @type = "hidden" })
-        
+
+    <div class="form-horizontal">
+
         <!--書籍名稱-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_NAME">書籍名稱</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BOOK_NAME, new { Value = @ViewBag.TheUpdateBook.BOOK_NAME, @class = "form-control" } )
-                @Html.ValidationMessageFor(model => model.BOOK_NAME, "", new { @class = "text-danger" })
+                <input class="k-textbox" data-val="true" data-val-required="此欄位必填" id="BOOK_NAME" name="BOOK_NAME" type="text" required/>
             </div>
         </div>
-        
+
         <!--書籍作者-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_AUTHOR, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_AUTHOR">書籍作者</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BOOK_AUTHOR, new { Value = @ViewBag.TheUpdateBook.BOOK_AUTHOR, @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BOOK_AUTHOR, "", new { @class = "text-danger" })
+                <input class="k-textbox" data-val="true" data-val-required="此欄位必填" id="BOOK_AUTHOR" name="BOOK_AUTHOR" type="text" required/>
             </div>
         </div>
 
         <!--出版商-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_PUBLISHER, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_PUBLISHER">出版商</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BOOK_PUBLISHER, new { Value = @ViewBag.TheUpdateBook.BOOK_PUBLISHER, @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BOOK_PUBLISHER, "", new { @class = "text-danger" })
+                <input class="k-textbox" data-val="true" data-val-required="此欄位必填" id="BOOK_PUBLISHER" name="BOOK_PUBLISHER" type="text"required />
             </div>
         </div>
 
         <!--內容簡介-->
-        <script>
-            $(document).ready(function () {
-                $('#BOOK_NOTE').val('@ViewBag.TheUpdateBook.BOOK_NOTE');
-            });
-        </script>
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_NOTE, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_NOTE">內容簡介</label>
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.BOOK_NOTE, new {@class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BOOK_NOTE, "", new { @class = "text-danger" })
+                <textarea class="k-textbox" cols="30" data-val="true" data-val-required="此欄位必填" id="BOOK_NOTE" name="BOOK_NOTE" rows="4" required></textarea>
             </div>
         </div>
 
         <!--購書日期-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_BOUGHT_DATE, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_BOUGHT_DATE">購書日期</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BOOK_BOUGHT_DATE, new { Value = @ViewBag.TheUpdateBook.BOOK_BOUGHT_DATE, @type = "Date", @style = "text-align:left", @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BOOK_BOUGHT_DATE, "", new { @class = "text-danger" })
+                <input type="text" data-role='datepicker' data-type="date" class="form-control" id="BOOK_BOUGHT_DATE" name="BOOK_BOUGHT_DATE" style="text-align:left" required validationMessage="請輸入購入日期" />
             </div>
         </div>
 
         <!--圖書類別-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_CLASS_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="BOOK_CLASS_ID">圖書類別</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.BOOK_CLASS_ID, (List<SelectListItem>)ViewBag.BookClass,  new { Value = @ViewBag.TheUpdateBook.BOOK_CLASS_ID, @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BOOK_CLASS_ID, "", new { @class = "text-danger" })
+                <input id="BookClassId" name="BOOK_CLASS_ID" required validationMessage="請輸入圖書類別" />
             </div>
         </div>
 
         <!--借閱狀態-->
         <div class="form-group">
-            @Html.LabelFor(model => model.BOOK_STATUS, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2">借閱狀態</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.BOOK_STATUS, (List<SelectListItem>)ViewBag.StatusClass,  new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BOOK_STATUS, "", new { @class = "text-danger" })
+                <input id="BookStatus" name="BookStatus" required/>
             </div>
         </div>
-        @if (ViewBag.TheUpdateBook.BOOK_STATUS.Equals("A")|| ViewBag.TheUpdateBook.BOOK_STATUS.Equals("U"))
-        {
-            <input type="hidden" id="SatausOfDelete" value="yes"/>
-        }
-        else
-        {
-            <input type="hidden" id="SatausOfDelete" value="no" />
-        }
 
         <!--借閱人-->
-            <div class="form-group" id="hiddenKeeper">
-                @Html.LabelFor(model => model.BOOK_KEEPER, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="text" class="form-control" disabled/>
-                </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">借閱人</label>
+            <div class="col-md-10" id="BookKeeperDisplay">
+                <input id="BookKeeper" name="BookKeeper" />
             </div>
+       </div>
 
-            <div class="form-group" id="showKeeper">
-                @Html.LabelFor(model => model.BOOK_KEEPER, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.BOOK_KEEPER, (List<SelectListItem>)ViewBag.KeeperClass, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.BOOK_KEEPER, "", new { @class = "text-danger" })
-                </div>
-            </div>
 
         <div class="form-group">
             <div class="col-md-2"></div>
             <div class="col-md-2">
-                <button class="btn btn-default">@Html.ActionLink("Back to List", "Index")</button> 
+                <button class="btn btn-default"><a href="/Book">Back to List</a></button>
             </div>
             <div class="col-md-2 ">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input class="btnSave btn btn-default" value="儲存"  />
             </div>
             <div class="col-md-2 ">
                 <button class="btnDelete btn btn-default" href="#">刪除</button>
-                <input class="hidBookId" type="hidden" value='@ViewBag.TheUpdateBook.BOOK_ID' />
             </div>
         </div>
     </div>
-}
+    
+</form>
 <script>
     $(document).ready(function () {
-        var FirstBookStatus = $("#BOOK_STATUS").val();
-        if (FirstBookStatus === "A" || FirstBookStatus === "U") {
-            $("#hiddenKeeper").show();
-            $("#showKeeper").hide();
-        }
-        else {
-            $("#hiddenKeeper").hide();
-            $("#showKeeper").show();
-        }
-        $("#BOOK_STATUS").click(function (e) {
-            var BookStatus = $(this).val();
-            if (BookStatus === "A" || BookStatus === "U") {
-                $("#hiddenKeeper").show();
-                $("#showKeeper").hide();
+        //取得網址
+        var urlSplit = window.location.href.split("/");
+        //取得書籍編號
+        var bookId = urlSplit[5];
+        $("#hidBookId").val(bookId);
+
+        function BookKeeperDisplay(choose) {
+            if (choose === "A" || choose === "U") {
+                $('#BookKeeperDisplay').hide();
+            } else {
+                $('#BookKeeperDisplay').show();
             }
-            else {
-                $("#hiddenKeeper").hide();
-                $("#showKeeper").show();
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/Book/GetUpdateBook/" + bookId,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                //set book value
+                $('#BOOK_NAME').val(response.BOOK_NAME);
+                $('#BOOK_AUTHOR').val(response.BOOK_AUTHOR);
+                $('#BOOK_PUBLISHER').val(response.BOOK_PUBLISHER);
+                $('#BOOK_NOTE').val(response.BOOK_NOTE);
+                $('#BOOK_BOUGHT_DATE').val(response.BOOK_BOUGHT_DATE);
+                $('#BOOK_CLASS_ID').val(response.BOOK_CLASS_ID);
+                $('#BOOK_STATUS').val(response.BOOK_STATUS);
+                BookKeeperDisplay(response.BOOK_STATUS);
+                $('#BOOK_KEEPER').val(response.BOOK_KEEPER);
+                // Dropdownlist修改成method 呼叫
+                var bookClass = $.ajax({
+                    type: "GET",
+                    url: "/Book/GetDropdownList",
+                    data: "type=BookClass",
+                    dataType: "json",
+                    success: function (response) {
+                        setBookClassList(response);
+                        console.log("Get BookClass dropdownlist data .")
+                    }
+                });
+
+                var keeperClass = "";
+                $.ajax({
+                    type: "GET",
+                    url: "/Book/GetDropdownList",
+                    data: "type=KeeperClass",
+                    dataType: "json",
+                    success: function (response) {
+                        keeperClass = response;
+                        setKeeperClassList(response);
+                        console.log("Get KeeperClass dropdownlist data .")
+                    }
+                });
+
+                var statusClass = $.ajax({
+                    type: "GET",
+                    url: "/Book/GetDropdownList",
+                    data: "type=StatusClass",
+                    dataType: "json",
+                    success: function (response) {
+                        setBookStatusList(response);
+                        console.log("Get StatusClass dropdownlist data .")
+                    }
+                });
+
+                //BookClass DropdownList
+                function setBookClassList(drpData) {
+                    $('#BookClassId').kendoComboBox({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: JSON.parse(drpData),
+                        filter: "contains",
+                        suggest: true,
+                        value: response.BOOK_CLASS_ID
+                    });
+                }
+
+                //KeeperClass DropdownList
+                function setKeeperClassList(drpData) {
+                    $('#BookKeeper').kendoComboBox({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: JSON.parse(drpData),
+                        filter: "contains",
+                        suggest: true,
+                        enable:true,
+                        value: response.BOOK_KEEPER
+                    });
+                }
+                
+                //StatusClass DropdownList
+                function setBookStatusList(drpData) {
+                    $('#BookStatus').kendoComboBox({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: JSON.parse(drpData),
+                        filter: "contains",
+                        suggest: true,
+                        value: response.BOOK_STATUS,
+                        change: function (e) {
+                            var value = this.value();
+                            BookKeeperDisplay(value);
+                        }
+                    });
+                }
             }
         });
+        //transfor input to DatePicker
+            $("#BOOK_BOUGHT_DATE").kendoDatePicker({
+                format: "yyyy/MM/dd",
+                max: new Date()
+            });
+            var validator = $("#UpdateBookForm").kendoValidator({
+                rules: {
+                    datepicker: function (input) {
+                        if (input.is("[data-role=datetimepicker]")) {
+                            return input.data("kendoDateTimePicker").value();
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+            }).data("kendoValidator");
+
+        //Save update book
+            $('.btnSave').click(function (event) {
+                event.preventDefault();
+                var status = $('#BookStatus').val();
+                if (status === "A" || status === "U") {
+                    $('#BookKeeper').attr("required", false);
+                }
+                else {
+                    $('#BookKeeper').attr("required", true);
+                }
+                if (validator.validate()) {
+                    var bookModel = {
+                        BOOK_ID: bookId,
+                        BOOK_NAME: $('#BOOK_NAME').val(),
+                        BOOK_AUTHOR: $('#BOOK_AUTHOR').val(),
+                        BOOK_PUBLISHER: $('#BOOK_PUBLISHER').val(),
+                        BOOK_NOTE: $('#BOOK_NOTE').val(),
+                        BOOK_BOUGHT_DATE: $('#BOOK_BOUGHT_DATE').val(),
+                        BOOK_CLASS_ID: $('#BookClassId').val(),
+                        BOOK_STATUS: $('#BookStatus').val(),
+                        BOOK_KEEPER: $('#BookKeeper').val()
+                    };
+                    console.log(bookModel);
+                    $.ajax({
+                        type: "POST",
+                        url: "/Book/UpdateBook",
+                        data: bookModel,
+                        dataType: "json",
+                        success: function (response) {
+                            alert("更新成功!");
+                            window.location.pathname = "/Book";
+                        },
+                        error: function (response) {
+                            alert("更新失敗!");
+                        }
+                    });
+                }
+            });
+
+        //Delete Book
             $('.btnDelete').click(function (e) {
                 var status = $('#SatausOfDelete').val();
-                var value = $(this).next().val();
-                if (status === "no") {
+                var value = bookId;
+                if ($('#BookStatus').val() === "B" || $('#BookStatus').val()==="C") {
                     alert("已借出的書籍不可刪除! 請先修改狀態 ");
                 }
                 else
@@ -167,23 +268,18 @@
                         $.ajax({
                             type: "POST",
                             url: "/Book/DeleteBook",
-                            data: "bookId=" + $(this).next().val(),
+                            data: "bookId=" + bookId,
                             dataType: "json",
                             success: function (response) {
                                 alert("刪除成功");
                                 $(location).attr('href', '/Book');
-                            }, error: function (error) {
-                                alert("系統發生錯誤");
                             }
                         });
+                        
                     }
                 }
-                    
+
             });
         });
 
 </script>
-
-<script src="~/Scripts/jquery-1.10.2.min.js"></script>
-<script src="~/Scripts/jquery.validate.min.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

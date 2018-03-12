@@ -58,106 +58,31 @@ namespace eBook.Controllers
         [HttpGet]
         public ActionResult UpdateBook(String id)
         {
-            Models.BookServices bookServices = new Models.BookServices();
-            
-            ///取得欲更新的書籍資訊
-            ViewBag.TheUpdateBook = bookServices.GetUpdateBook(id);
-
-            ///取得預設圖書類別
-            List<SelectListItem> BookClassSelect = classServices.GetClassTable();
-            foreach (SelectListItem i in BookClassSelect) {
-                if (i.Value.Equals(ViewBag.TheUpdateBook.BOOK_CLASS_ID)){
-                    i.Selected = true;
-                }
-            }
-            ViewBag.BookClass = BookClassSelect;
-
-            ///取得預設借閱狀態
-            List<SelectListItem> StatusClassSelect = classServices.GetStatusTable();
-            foreach (SelectListItem i in StatusClassSelect)
-            {
-                if (i.Value.Equals(ViewBag.TheUpdateBook.BOOK_STATUS))
-                {
-                    i.Selected = true;
-                }
-            }
-            ViewBag.StatusClass = StatusClassSelect;
-
-            ///取得預設借閱人
-            List<SelectListItem> KeeperClassSelect = classServices.GetKeeperTable();
-            foreach (SelectListItem i in KeeperClassSelect)
-            {
-                if (i.Value.Equals(ViewBag.TheUpdateBook.BOOK_KEEPER))
-                {
-                    i.Selected = true;
-                }
-            }
-            ViewBag.KeeperClass = KeeperClassSelect;
-
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult GetUpdateBook(String id)
+        {
+            Models.BookServices bookServices = new Models.BookServices();
+
+            Models.Book updateBook = new Models.Book();
+            ///取得欲更新的書籍資訊
+            updateBook = bookServices.GetUpdateBook(id);
+            return Json(updateBook, JsonRequestBehavior.AllowGet);
         }
 
         ///更新書籍資料
         [HttpPost]
-        public ActionResult UpdateBook(Models.Book book)
+        public JsonResult UpdateBook(Models.Book book)
         {
-            Models.BookServices bookServices = new Models.BookServices();
-            if (ModelState.IsValid)
-            {
+            Models.BookServices bookServices = new Models.BookServices();        
                 ///更新書籍
                 bookServices.UpdateBook(book); 
-            }
 
-            return RedirectToAction("Index", "Book");///RedirectToAction("Function name","Controller name")
+            return Json("success");///RedirectToAction("Function name","Controller name")
         }
 
-        ///顯示書籍明細頁面
-        [HttpGet]
-        public ActionResult DetailOfBook(String id)
-        {
-            Models.BookServices bookServices = new Models.BookServices();
-
-            ///取得特定書籍資訊
-            ViewBag.DetailBook = bookServices.GetUpdateBook(id);
-
-            ///取得預設圖書類別
-            List<SelectListItem> BookClassSelect = classServices.GetClassTable();
-            foreach (SelectListItem i in BookClassSelect)
-            {
-                if (i.Value.Equals(ViewBag.DetailBook.BOOK_CLASS_ID))
-                {
-                    i.Selected = true;
-                    ViewBag.Class = i.Text;
-                }
-            }
-            ViewBag.BookClass = BookClassSelect;
-
-            ///取得預設借閱狀態
-            List<SelectListItem> StatusClassSelect = classServices.GetStatusTable();
-            foreach (SelectListItem i in StatusClassSelect)
-            {
-                if (i.Value.Equals(ViewBag.DetailBook.BOOK_STATUS))
-                {
-                    i.Selected = true;
-                    ViewBag.Status = i.Text;
-                }
-            }
-            ViewBag.StatusClass = StatusClassSelect;
-
-            ///取得預設借閱人
-            List<SelectListItem> KeeperClassSelect = classServices.GetKeeperTable();
-            foreach (SelectListItem i in KeeperClassSelect)
-            {
-                if (i.Value.Equals(ViewBag.DetailBook.BOOK_KEEPER))
-                {
-                    i.Selected = true;
-                    ViewBag.Keeper = i.Text;
-                }
-            }
-            ViewBag.KeeperClass = KeeperClassSelect;
-
-            return View();
-        }
 
         /// <summary>
         /// 刪除書籍
@@ -171,12 +96,12 @@ namespace eBook.Controllers
             {
                 Models.BookServices BookService = new Models.BookServices();
                 BookService.DeleteBookById(bookId);
-                return this.Json(true);
+                return Json(true);
             }
-
             catch (Exception ex)
             {
-                return this.Json(false);
+                Console.WriteLine(ex);
+                return Json(false);
             }
         }
 

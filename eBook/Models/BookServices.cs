@@ -185,7 +185,7 @@ namespace eBook.Models
             DataTable dt = new DataTable();
             string sql = @"SELECT a.BOOK_ID , a.BOOK_NAME
 	                          ,a.BOOK_CLASS_ID , b.BOOK_CLASS_NAME as CLASS_NAME
-                              ,a.BOOK_AUTHOR , FORMAT(a.BOOK_BOUGHT_DATE,'yyyy-MM-dd') as BOOK_BOUGHT_DATE
+                              ,a.BOOK_AUTHOR , FORMAT(a.BOOK_BOUGHT_DATE,'yyyy/MM/dd') as BOOK_BOUGHT_DATE
                               ,a.BOOK_PUBLISHER , a.BOOK_NOTE
 	                          ,a.BOOK_STATUS , c.CODE_NAME as STATUS_NAME
                               ,a.BOOK_KEEPER , d.USER_ENAME ,d.USER_CNAME

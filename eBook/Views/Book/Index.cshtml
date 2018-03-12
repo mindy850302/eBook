@@ -113,7 +113,7 @@
                     });
                 }
 
-                //KeeperClass DropdownList
+                //StatusClass DropdownList
                 function setBookStatusList(drpData) {
                     $('#BookStatus').kendoComboBox({
                         dataTextField: "Text",
@@ -151,7 +151,6 @@
                 function gridDisplay(result) {
                     //查詢結果亂碼轉換
                     var formatJson = result.replace(/&quot;/g, '"');
-
                     //console.log(formatJson);
                     //把資料轉換成JSON格式
                     var resultByCondition = JSON.parse(formatJson);
@@ -177,6 +176,7 @@
                         scrollable: true,
                         sortable: true,
                         filterable: true,
+                        //editable: true,
                         pageable: {
                             input: true,
                             numeric: false
@@ -194,10 +194,49 @@
                                     click: showUpdate
                                 },  
                                 {
-                                    name:"destroy"
-                                }], title:"&nbsp;"}
-                        ]
+                                    name: "delete",
+                                    click: DeleteBookButtonClick
+                                }
+                            ], title: "&nbsp;"
+                            }
+
+                        ],
+                        remove: function (e) {
+                            console.log("Removing ", e.model.BOOK_ID);
+                        }
+
                     });
+                } 
+                //刪除書籍列
+                function DeleteBookButtonClick(e) {
+                    e.preventDefault();
+                    var dataRow = this.dataItem($(e.currentTarget).closest("tr"));
+                    console.log("book id is " + dataRow.BOOK_ID);
+                    console.log("book status is " + dataRow.BOOK_STATUS);
+                    if (dataRow.BOOK_STATUS === "已借出" || dataRow.BOOK_STATUS === "已借出(未領)")
+                    {
+                        alert("已有人借閱不能刪除!");
+                    }
+                    else
+                    {
+                        if (confirm("是否確定刪除?")) {
+                            var dataSource = $("#grid").data('kendoGrid').dataSource;
+                            dataSource.remove(dataRow);
+                            $.ajax({
+                                type: "POST", //POST or GET
+                                url: "/Book/DeleteBook",// 發送請求的url
+                                data: "bookId=" + dataRow.BOOK_ID,//傳給server 的data
+                                dataType: "json", //傳回的數據類型 ,可為xml,html,text....
+                                success: function (response) {
+                                    alert("刪除成功");
+                                }, error: function (error) {
+                                    alert("系統發生錯誤");
+                                }
+                            });
+                            return;
+                        }
+                    }
+                    
                 }
                 //跳轉更新書籍頁面
                 function showUpdate(e) {
@@ -212,12 +251,6 @@
                     window.location.pathname = "/Book/InsertBook";
                 });
                 
-                function showUpdate(e) {
-                    e.preventDefault();
-                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                    window.location.pathname = "/Book/UpdateBook/" + dataItem.BOOK_ID;
-                    console.log(dataItem.BOOK_ID);
-                }
 
                 //控制書籍刪除
                 $('.btnDelete').click(function (e) {
