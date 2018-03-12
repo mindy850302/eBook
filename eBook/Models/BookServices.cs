@@ -29,22 +29,23 @@ namespace eBook.Models
             ///Select SCOPE_IDENTITY() ->取得insert 的Book id
             string sql = @" 
                        BEGIN TRY   
-                             INSERT INTO BOOK_DATA
-                                   ( BOOK_NAME , BOOK_CLASS_ID
-                                   , BOOK_AUTHOR , BOOK_BOUGHT_DATE
-                                   , BOOK_PUBLISHER , BOOK_NOTE
-                                   , BOOK_STATUS , BOOK_KEEPER
-                                   , CREATE_DATE , CREATE_USER
-                                   , MODIFY_DATE , MODIFY_USER )
-                             VALUES
-                                   ( @BookName , @BookClassId
-                                   , @BookAuthor , @BookBoughtDate
-                                   , @BookPublisher , @BookNote
-                                   , @BookStatus , @BookKeeper
-                                   , @CreateDate , @CreateUser
-                                   , @ModifyDate , @ModifyUser )
-						    Select SCOPE_IDENTITY()
-                        
+                            BEGIN TRANSACTION
+                                 INSERT INTO BOOK_DATA
+                                       ( BOOK_NAME , BOOK_CLASS_ID
+                                       , BOOK_AUTHOR , BOOK_BOUGHT_DATE
+                                       , BOOK_PUBLISHER , BOOK_NOTE
+                                       , BOOK_STATUS , BOOK_KEEPER
+                                       , CREATE_DATE , CREATE_USER
+                                       , MODIFY_DATE , MODIFY_USER )
+                                 VALUES
+                                       ( @BookName , @BookClassId
+                                       , @BookAuthor , @BookBoughtDate
+                                       , @BookPublisher , @BookNote
+                                       , @BookStatus , @BookKeeper
+                                       , @CreateDate , @CreateUser
+                                       , @ModifyDate , @ModifyUser )
+						        Select SCOPE_IDENTITY()
+                            COMMIT TRANSACTION
                         END TRY
                         BEGIN CATCH 
 	                        SELECT ERROR_NUMBER()
@@ -171,7 +172,9 @@ namespace eBook.Models
             {
                 string sql = @"
                                 BEGIN TRY
-                                        Delete FROM BOOK_DATA Where BOOK_ID=@BookId
+                                    BEGIN TRANSACTION
+                                        Delete FROM BOOK_DATA Where BOOK_ID=@BookId;
+                                    COMMIT TRANSACTION
                                 END TRY
                                 BEGIN CATCH 
 	                                SELECT ERROR_NUMBER()
@@ -257,18 +260,20 @@ namespace eBook.Models
         {
             string sql = @" 
                          BEGIN TRY   
-                            UPDATE BOOK_DATA
-                                SET
-                                        BOOK_NAME =  @BookName 
-                                       ,BOOK_CLASS_ID = @BookClassId
-                                       ,BOOK_AUTHOR = @BookAuthor
-                                       ,BOOK_BOUGHT_DATE =  @BookBoughtDate 
-                                       ,BOOK_PUBLISHER = @BookPublisher 
-                                       ,BOOK_NOTE = @BookNote
-                                       ,BOOK_STATUS =  @BookStatus 
-                                       ,BOOK_KEEPER = @BookKeeper
-                                       ,MODIFY_DATE = @ModifyDate
-                                WHERE BOOK_DATA.BOOK_ID = @BookId
+                            BEGIN TRANSACTION
+                                UPDATE BOOK_DATA
+                                    SET
+                                            BOOK_NAME =  @BookName 
+                                           ,BOOK_CLASS_ID = @BookClassId
+                                           ,BOOK_AUTHOR = @BookAuthor
+                                           ,BOOK_BOUGHT_DATE =  @BookBoughtDate 
+                                           ,BOOK_PUBLISHER = @BookPublisher 
+                                           ,BOOK_NOTE = @BookNote
+                                           ,BOOK_STATUS =  @BookStatus 
+                                           ,BOOK_KEEPER = @BookKeeper
+                                           ,MODIFY_DATE = @ModifyDate
+                                    WHERE BOOK_DATA.BOOK_ID = @BookId;
+                            COMMIT TRANSACTION
                         END TRY
                         BEGIN CATCH 
 	                            SELECT ERROR_NUMBER()
