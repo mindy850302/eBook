@@ -27,7 +27,9 @@ namespace eBook.Models
         public int InsertBook(Models.Book book)
         {
             ///Select SCOPE_IDENTITY() ->取得insert 的Book id
-            string sql = @" INSERT INTO BOOK_DATA
+            string sql = @" 
+                       BEGIN TRY   
+                             INSERT INTO BOOK_DATA
                                    ( BOOK_NAME , BOOK_CLASS_ID
                                    , BOOK_AUTHOR , BOOK_BOUGHT_DATE
                                    , BOOK_PUBLISHER , BOOK_NOTE
@@ -41,7 +43,14 @@ namespace eBook.Models
                                    , @BookStatus , @BookKeeper
                                    , @CreateDate , @CreateUser
                                    , @ModifyDate , @ModifyUser )
-						Select SCOPE_IDENTITY()";
+						    Select SCOPE_IDENTITY()
+                        
+                        END TRY
+                        BEGIN CATCH 
+	                        SELECT ERROR_NUMBER()
+                            ROLLBACK TRAN
+                        END CATCH;
+                        ";
 
             int BookId;
 
@@ -160,7 +169,14 @@ namespace eBook.Models
         {
             try
             {
-                string sql = "Delete FROM BOOK_DATA Where BOOK_ID=@BookId";
+                string sql = @"
+                                BEGIN TRY
+                                        Delete FROM BOOK_DATA Where BOOK_ID=@BookId
+                                END TRY
+                                BEGIN CATCH 
+	                                SELECT ERROR_NUMBER()
+                                    ROLLBACK TRAN
+                                END CATCH;";
                 using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
                 {
                     conn.Open();
@@ -239,18 +255,25 @@ namespace eBook.Models
         /// <returns></returns>
         public int UpdateBook(Models.Book book)
         {
-            string sql = @" UPDATE BOOK_DATA
-                            SET
-                                    BOOK_NAME =  @BookName 
-                                   ,BOOK_CLASS_ID = @BookClassId
-                                   ,BOOK_AUTHOR = @BookAuthor
-                                   ,BOOK_BOUGHT_DATE =  @BookBoughtDate 
-                                   ,BOOK_PUBLISHER = @BookPublisher 
-                                   ,BOOK_NOTE = @BookNote
-                                   ,BOOK_STATUS =  @BookStatus 
-                                   ,BOOK_KEEPER = @BookKeeper
-                                   ,MODIFY_DATE = @ModifyDate
-                            WHERE BOOK_DATA.BOOK_ID = @BookId";
+            string sql = @" 
+                         BEGIN TRY   
+                            UPDATE BOOK_DATA
+                                SET
+                                        BOOK_NAME =  @BookName 
+                                       ,BOOK_CLASS_ID = @BookClassId
+                                       ,BOOK_AUTHOR = @BookAuthor
+                                       ,BOOK_BOUGHT_DATE =  @BookBoughtDate 
+                                       ,BOOK_PUBLISHER = @BookPublisher 
+                                       ,BOOK_NOTE = @BookNote
+                                       ,BOOK_STATUS =  @BookStatus 
+                                       ,BOOK_KEEPER = @BookKeeper
+                                       ,MODIFY_DATE = @ModifyDate
+                                WHERE BOOK_DATA.BOOK_ID = @BookId
+                        END TRY
+                        BEGIN CATCH 
+	                            SELECT ERROR_NUMBER()
+                                ROLLBACK TRAN
+                        END CATCH;";
 
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
             {
