@@ -77,7 +77,38 @@
                 index: 0
             });
         }
-        
+
+        //delete alert and check book status
+        function deleteAlert( originalStatus , bookId , paraOfMethod, method) {
+            if (originalStatus === "B" || originalStatus === "C") {
+                alert("已有人借閱不能刪除!");
+            }
+            else {
+                if (confirm("是否確定刪除?")) {
+
+                    $.ajax({
+                        type: "POST", //POST or GET
+                        url: "/Book/DeleteBook",// 發送請求的url
+                        data: "bookId=" + bookId,//傳給server 的data
+                        dataType: "json", //傳回的數據類型 ,可為xml,html,text....
+                        success: function (response) {
+                            method(paraOfMethod);
+                            alert("刪除成功");
+                           
+                        }, error: function (error) {
+                            alert("系統發生錯誤");
+                        }
+                    });
+                    return false;
+                }
+            }
+
+        }
+
+        //redirect page function
+        function redirectPage(path) {
+            $(location).attr('href', path);
+        }
     </script>
 
 </body>

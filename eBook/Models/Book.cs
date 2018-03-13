@@ -66,6 +66,12 @@ namespace eBook.Models
         public string BOOK_STATUS { get; set; }
 
         /// <summary>
+        /// 借閱狀態(是否可借出)
+        /// </summary>
+        [DisplayName("借閱代碼")]
+        public string BOOK_STATUS_CODE { get; set; }
+
+        /// <summary>
         /// 借閱人
         /// </summary>
         [DisplayName("借閱人")]

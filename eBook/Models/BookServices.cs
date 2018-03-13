@@ -153,6 +153,7 @@ namespace eBook.Models
                     BOOK_NOTE = row["BOOK_NOTE"].ToString(),
                     BOOK_PUBLISHER = row["BOOK_PUBLISHER"].ToString(),
                     BOOK_STATUS = row["STATUS_NAME"].ToString(),
+                    BOOK_STATUS_CODE = row["BOOK_STATUS"].ToString(),
                     CREATE_DATE = row["CREATE_DATE"].ToString(),
                     CREATE_USER = row["CREATE_USER"].ToString(),
                     MODIFY_DATE = row["MODIFY_DATE"].ToString(),

@@ -7,7 +7,7 @@ using System.Web.Routing;
 
 namespace eBook
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : Spring.Web.Mvc.SpringMvcApplication ///System.Web.HttpApplication 換成用spring的架構,改用spring去繼承
     {
         protected void Application_Start()
         {

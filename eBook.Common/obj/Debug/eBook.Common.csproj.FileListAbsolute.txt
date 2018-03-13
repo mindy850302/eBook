@@ -1,0 +1,7 @@
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Common\bin\Debug\eBook.Common.dll
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Common\bin\Debug\eBook.Common.pdb
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Common\obj\Debug\eBook.Common.csprojResolveAssemblyReference.cache
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Common\obj\Debug\eBook.Common.dll
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Common\obj\Debug\eBook.Common.pdb
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Common\bin\Debug\log4net.dll
+C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Common\bin\Debug\log4net.xml

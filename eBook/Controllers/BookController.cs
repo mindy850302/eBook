@@ -6,26 +6,35 @@ using System.Web.Mvc;
 using PagedList.Mvc;
 using PagedList;
 using System.Web.Script.Serialization;
+using eBook.Service;
 
 namespace eBook.Controllers
 {
     public class BookController : Controller
     {
-        Models.ClassServices classServices = new Models.ClassServices();
+        private IClassService classService { get; set; }
+        private IBookService bookService { get; set; }
 
         /// 首頁
         [HttpGet]
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                eBook.Common.Logger.Write(eBook.Common.Logger.LogCategoryEnum.Error, ex.ToString());
+                return View("Error");
+            }
+            
         }
 
         ///依查詢條件回傳結果
         [HttpPost()]
-        public JsonResult Index(Models.BookSearchArg arg )
+        public JsonResult Index(eBook.Model.BookSearchArg arg )
         {
-            Models.BookServices bookService = new Models.BookServices();
-
             ///ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);回傳查詢結果
 
             ///回傳JSON格式的查詢結果
@@ -38,18 +47,14 @@ namespace eBook.Controllers
         ///顯示新增書籍頁面
         [HttpGet]
         public ActionResult InsertBook() {
-            ///下拉式選單資料
-            ViewBag.BookClass = classServices.GetClassTable();///圖書類別
             return View();
         }
 
         ///執行新增書籍
         [HttpPost]
-        public JsonResult InsertBook(Models.Book book)
+        public JsonResult InsertBook(eBook.Model.Book book)
         {
-            Models.BookServices bookServices = new Models.BookServices();
-
-                int bookId = bookServices.InsertBook(book);
+                int bookId = bookService.InsertBook(book);
 
                 return Json(bookId);
         }
@@ -58,6 +63,7 @@ namespace eBook.Controllers
         [HttpGet]
         public ActionResult UpdateBook(String id)
         {
+            ViewBag.BookId = id;
             return View();
         }
 
@@ -69,21 +75,19 @@ namespace eBook.Controllers
         [HttpGet]
         public JsonResult GetUpdateBook(String id)
         {
-            Models.BookServices bookServices = new Models.BookServices();
 
-            Models.Book updateBook = new Models.Book();
+            eBook.Model.Book updateBook = new eBook.Model.Book();
             ///取得欲更新的書籍資訊
-            updateBook = bookServices.GetUpdateBook(id);
+            updateBook = bookService.GetUpdateBook(id);
             return Json(updateBook, JsonRequestBehavior.AllowGet);
         }
 
         ///更新書籍資料
         [HttpPost]
-        public JsonResult UpdateBook(Models.Book book)
-        {
-            Models.BookServices bookServices = new Models.BookServices();        
+        public JsonResult UpdateBook(eBook.Model.Book book)
+        {    
                 ///更新書籍
-                bookServices.UpdateBook(book); 
+                bookService.UpdateBook(book); 
 
             return Json("success");///RedirectToAction("Function name","Controller name")
         }
@@ -99,8 +103,7 @@ namespace eBook.Controllers
         {
             try
             {
-                Models.BookServices BookService = new Models.BookServices();
-                BookService.DeleteBookById(bookId);
+                bookService.DeleteBookById(bookId);
                 return Json(true);
             }
             catch (Exception ex)
@@ -120,17 +123,17 @@ namespace eBook.Controllers
             {
                 ///回傳圖書類別Data
                 case "BookClassId":
-                    jsonForClassArray = json.Serialize(classServices.GetClassTable());
+                    jsonForClassArray = json.Serialize(classService.GetClassTable());
                     break;
 
                 ///回傳借閱人Data
                 case "BookKeeper":
-                    jsonForClassArray = json.Serialize(classServices.GetKeeperTable());
+                    jsonForClassArray = json.Serialize(classService.GetKeeperTable());
                     break;
 
                 ///回傳借閱狀態Data
                 case "BookStatus":
-                    jsonForClassArray = json.Serialize(classServices.GetStatusTable());
+                    jsonForClassArray = json.Serialize(classService.GetStatusTable());
                     break;
                 default:
                     break;

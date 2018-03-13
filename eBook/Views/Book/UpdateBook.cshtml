@@ -2,7 +2,7 @@
 <h2>UpdateBook</h2>
 
 
-<form id="UpdateBookForm">
+<div id="UpdateBookForm">
         <h4>Book</h4>
         <hr />
 
@@ -80,22 +80,22 @@
                 <button class="btn btn-default"><a href="/Book">Back to List</a></button>
             </div>
             <div class="col-md-2 ">
-                <input class="btnSave btn btn-default" value="儲存" />
+                <button class="btnSave btn btn-default">儲存</button>
             </div>
             <div class="col-md-2 ">
-                <button class="btnDelete btn btn-default" href="#">刪除</button>
+                <button class="btnDelete btn btn-default">刪除</button>
                 <input type="hidden" id="hideBookId" />
             </div>
         </div>
     </div>
     
-</form>
+</div>
 <script>
     $(document).ready(function () {
         //get url
         var urlSplit = window.location.href.split("/");
         //get book ID
-        var bookId = urlSplit[5];
+        var bookId = urlSplit[urlSplit.length-1];
         //set book ID
         $("#hideBookId").val(bookId);
 
@@ -204,7 +204,7 @@
         }).data("kendoValidator");
 
         //Save update book
-        $('.btnSave').click(function (event) {
+        $('.btnSave').click(function (event) {//id
             event.preventDefault();
             var status = $('#BookStatus').val();
             if (status === "A" || status === "U") {
@@ -241,34 +241,13 @@
                 });
             }
         });
-
+        
         //Delete Book
         $('.btnDelete').click(function (e) {
             var value = bookId;
             console.log("Book ID : " + bookId);
             console.log("Book ID(hidden): " + $("#hideBookId").val());
-
-            //check original book status
-            if ($('#originalBookStatus').val() === "B" || $('#originalBookStatus').val() === "C") {
-                alert("已借出的書籍不可刪除! 請先修改狀態 ");
-                window.location.pathname = "/Book/UpdateBook/" + bookId;
-            }
-            else {
-                var choose = confirm("是否刪除 ? ");
-                if (choose == true) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/Book/DeleteBook",
-                        data: "bookId=" + bookId,
-                        dataType: "json",
-                        success: function (response) {
-                            alert("刪除成功");
-                            $(location).attr('href', '/Book');
-                        }
-                    });
-
-                }
-            }
+            deleteAlert($('#originalBookStatus').val(), bookId, "/Book", redirectPage);
 
         });
         });

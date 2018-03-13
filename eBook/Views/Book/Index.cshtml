@@ -4,231 +4,197 @@
 
 
 @*<form action="/Book" id="Form1" method="post">*@
-    <div class="form-horizontal">
-        <!--書籍名稱-->
-        <div class="form-group">
-            <label class="control-label col-md-2">書籍名稱</label>
-            <div class="col-md-10">
-                <input type="text" class="k-textbox" name="BookName" id="BookName"/>
-            </div>
-        </div>
-
-        <!--圖書類別-->
-        <div class="form-group">
-            <label class="control-label col-md-2">圖書類別</label>
-            <div class="col-md-10">
-                <input id="BookClassId" name="BookClassId"/>
-            </div>
-        </div>
-
-        <!--借閱人-->
-        <div class="form-group">
-            <label class="control-label col-md-2">借閱人</label>
-            <div class="col-md-10">
-                <input id="BookKeeper" name="BookKeeper" />
-            </div>
-        </div>
-
-        <!--借閱狀態-->
-        <div class="form-group">
-            <label class="control-label col-md-2">借閱狀態</label>
-            <div class="col-md-10">
-                <input id="BookStatus" name="BookStatus" />
-            </div>
-        </div>
-
-        <!--查詢、新增、刪除按鈕-->
-        <div class="form-group">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-10">
-                <button class="btn btn-default btnSearch">查詢</button>
-                <a id = "insertBook" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新增書籍</a>
-                <a href="/Book/Index" class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span>清除</a>
-
-            </div>
+<div class="form-horizontal">
+    <!--書籍名稱-->
+    <div class="form-group">
+        <label class="control-label col-md-2">書籍名稱</label>
+        <div class="col-md-10">
+            <input type="text" class="k-textbox" name="BookName" id="BookName" />
         </div>
     </div>
+
+    <!--圖書類別-->
+    <div class="form-group">
+        <label class="control-label col-md-2">圖書類別</label>
+        <div class="col-md-10">
+            <input id="BookClassId" name="BookClassId" />
+        </div>
+    </div>
+
+    <!--借閱人-->
+    <div class="form-group">
+        <label class="control-label col-md-2">借閱人</label>
+        <div class="col-md-10">
+            <input id="BookKeeper" name="BookKeeper" />
+        </div>
+    </div>
+
+    <!--借閱狀態-->
+    <div class="form-group">
+        <label class="control-label col-md-2">借閱狀態</label>
+        <div class="col-md-10">
+            <input id="BookStatus" name="BookStatus" />
+        </div>
+    </div>
+
+    <!--查詢、新增、刪除按鈕-->
+    <div class="form-group">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+            <button class="btn btn-default btnSearch">查詢</button>
+            <a id="insertBook" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新增書籍</a>
+            <a href="/Book/Index" class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span>清除</a>
+
+        </div>
+    </div>
+</div>
 @*</form>*@
 
-        <div id="grid">
-        </div>
-        <script>
-            $(document).ready(function () {
+<div id="grid">
+</div>
+<script>
+    $(document).ready(function () {
 
-                //set up BookClassId , BookKeeper , BookStatus DropdownList
-                var bookClass = ajaxForDropdownList("BookClassId");
-                var keeperClass = ajaxForDropdownList("BookKeeper");
-                var statusClass = ajaxForDropdownList("BookStatus");
-                
-                //利用ajax呼叫BookController 的Index[HttpPOST]
-                $('.btnSearch').click(function (e) {
-                    e.preventDefault();
-                    //取得搜尋字串並建成Model
-                    var bookSearchArgModel = {
-                        BookName: $('#BookName').val(),
-                        BookClassId: $('#BookClassId').val(),
-                        BookKeeper: $('#BookKeeper').val(),
-                        BookStatus: $('#BookStatus').val()
-                    };
-                    //call ajax回傳資料
-                    $.ajax({
-                        type: "POST",
-                        url: "/Book/Index",
-                        data: bookSearchArgModel,
-                        dataType: "json",
-                        success: function (response) {
-                            //console.log(response);
-                            gridDisplay(response);
-                        }
-                    });
-                });
+        //set up BookClassId , BookKeeper , BookStatus DropdownList
+        var bookClass = ajaxForDropdownList("BookClassId");
+        var keeperClass = ajaxForDropdownList("BookKeeper");
+        var statusClass = ajaxForDropdownList("BookStatus");
 
-                //Display grid
-                function gridDisplay(result) {
-                    //查詢結果亂碼轉換
-                    var formatJson = result.replace(/&quot;/g, '"');
-                    //console.log(formatJson);
-                    //把資料轉換成JSON格式
-                    var resultByCondition = JSON.parse(formatJson);
-                    //套用到grid格式
-                    $("#grid").kendoGrid({
-                        dataSource: {
-                            data: resultByCondition,
-                            schema: {
-                                model: {
-                                    fields: {
-                                        "BOOK_ID" : { type : "number" },
-                                        "BOOK_CLASS_ID": { type: "string" },
-                                        "BOOK_NAME": { type: "string" },
-                                        "BOOK_BOUGHT_DATE": { type: "string" },
-                                        "BOOK_STATUS": { type: "string" },
-                                        "BOOK_KEEPER": { type: "string" }
-                                    }
-                                }
-                            },
-                            pageSize: 20
-                        },
-                        height: 500,
-                        scrollable: true,
-                        sortable: true,
-                        filterable: true,
-                        //editable: true,
-                        pageable: {
-                            input: true,
-                            numeric: false
-                        },
-                        columns: [
-                            { field: "BOOK_ID", hidden : true },
-                            { field: "BOOK_CLASS_ID", title: "圖書類別" },
-                            { field: "BOOK_NAME", title: "書籍名稱" },
-                            { field: "BOOK_BOUGHT_DATE", title: "購入日期" },
-                            { field: "BOOK_STATUS", title: "借閱狀態" },
-                            { field: "BOOK_KEEPER", title: "借閱人" },
-                            { command : [
-                                {
-                                    name:"edit",
-                                    click: showUpdate
-                                }
-                            ], title: "&nbsp;"
-                            },
-                             {
-                                 command: [
-                                  {
-                                      name: "delete",
-                                      click: deleteBookButtonClick
-                                  }
-                                 ], title: "&nbsp;"
-                             }
-
-                        ],
-                        remove: function (e) {
-                            console.log("Removing ", e.model.BOOK_ID);
-                        }
-
-                    });
-                } 
-                //刪除書籍列
-                function deleteBookButtonClick(e) {
-                    e.preventDefault();
-                    var dataRow = this.dataItem($(e.currentTarget).closest("tr"));
-                    console.log("book id is " + dataRow.BOOK_ID);
-                    console.log("book status is " + dataRow.BOOK_STATUS);
-                    if (dataRow.BOOK_STATUS === "已借出" || dataRow.BOOK_STATUS === "已借出(未領)")
-                    {
-                        alert("已有人借閱不能刪除!");
-                    }
-                    else
-                    {
-                        if (confirm("是否確定刪除?")) {
-                            var dataSource = $("#grid").data('kendoGrid').dataSource;
-                            dataSource.remove(dataRow);
-                            $.ajax({
-                                type: "POST", //POST or GET
-                                url: "/Book/DeleteBook",// 發送請求的url
-                                data: "bookId=" + dataRow.BOOK_ID,//傳給server 的data
-                                dataType: "json", //傳回的數據類型 ,可為xml,html,text....
-                                success: function (response) {
-                                    alert("刪除成功");
-                                }, error: function (error) {
-                                    alert("系統發生錯誤");
-                                }
-                            });
-                            return;
-                        }
-                    }
-                    
+        //利用ajax呼叫BookController 的Index[HttpPOST]
+        $('.btnSearch').click(function (e) {
+            e.preventDefault();
+            //取得搜尋字串並建成Model
+            var bookSearchArgModel = {
+                BookName: $('#BookName').val(),
+                BookClassId: $('#BookClassId').val(),
+                BookKeeper: $('#BookKeeper').val(),
+                BookStatus: $('#BookStatus').val()
+            };
+            //call ajax回傳資料
+            $.ajax({
+                type: "POST",
+                url: "/Book/Index",
+                data: bookSearchArgModel,
+                dataType: "json",
+                success: function (response) {
+                    //console.log(response);
+                    gridDisplay(response);
                 }
-                //跳轉更新書籍頁面
-                function showUpdate(e) {
-                    e.preventDefault();
-                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                    window.location.pathname = "/Book/UpdateBook/" + dataItem.BOOK_ID;
-                    console.log(dataItem.BOOK_ID);
-                }
-
-                //跳轉新增書籍頁面
-                $('#insertBook').click(function (e) {
-                    window.location.pathname = "/Book/InsertBook";
-                });
-                
-
-                //控制書籍刪除
-                $('.btnDelete').click(function (e) {
-                    var value = $(this).next().val();
-                    if (value === "No") {
-                        alert("已借出的書籍不可刪除! 請先修改狀態");
-                    }
-                    else {
-                        var choose = confirm("是否刪除 ? ");
-                        if (choose == true) {
-                            var tr = $(this).closest('tr')
-                            //alert("value : " + $(this).next().val());
-                            $.ajax({
-                                type: "POST", //POST or GET
-                                url: "/Book/DeleteBook",// 發送請求的url
-                                data: "bookId=" + $(this).next().val(),//傳給server 的data
-                                dataType: "json", //傳回的數據類型 ,可為xml,html,text....
-                                success: function (response) {
-                                    $(tr).remove();
-                                    alert("刪除成功");
-                                }, error: function (error) {
-                                    alert("系統發生錯誤");
-                                }
-                            });
-                        }
-                    }
-                });
             });
+        });
 
-        </script>
+        //Display grid
+        function gridDisplay(result) {
+            //查詢結果亂碼轉換
+            var formatJson = result.replace(/&quot;/g, '"');
+            //console.log(formatJson);
+            //把資料轉換成JSON格式
+            var resultByCondition = JSON.parse(formatJson);
+            
+            //check grid is already exist or not
+            if ($('#grid').children().length != 0) {
+                $('#grid').empty();
+                $("#grid").data('kendoGrid').dataSource.data([]);
+            } 
+            //套用到grid格式
+            $("#grid").kendoGrid({
+                dataSource: {
+                    data: resultByCondition,
+                    schema: {
+                        model: {
+                            fields: {
+                                "BOOK_ID": { type: "number" },
+                                "BOOK_CLASS_ID": { type: "string" },
+                                "BOOK_NAME": { type: "string" },
+                                "BOOK_BOUGHT_DATE": { type: "string" },
+                                "BOOK_STATUS": { type: "string" },
+                                "BOOK_KEEPER": { type: "string" },
+                                "BOOK_STATUS_CODE": {type:"string"}
+                            }
+                        }
+                    },
+                    pageSize: 20
+                },
+                height: 500,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                //editable: true,
+                pageable: {
+                    input: true,
+                    numeric: false
+                },
+                columns: [
+                    { field: "BOOK_ID", hidden: true },
+                    { field: "BOOK_CLASS_ID", title: "圖書類別" },
+                    { field: "BOOK_NAME", title: "書籍名稱" },
+                    { field: "BOOK_BOUGHT_DATE", title: "購入日期" },
+                    { field: "BOOK_STATUS", title: "借閱狀態" },
+                    { field: "BOOK_KEEPER", title: "借閱人" },
+                    { field: "BOOK_STATUS_CODE", hidden: true },
+                    {
+                        command: [
+                          {
+                              name: "edit",
+                              click: showUpdate
+                          }
+                        ], title: "&nbsp;"
+                    },
+                     {
+                         command: [
+                          {
+                              name: "delete",
+                              click: deleteBookButtonClick,
+                              iconClass: "k-icon k-delete"
+                          }
+                         ], title: "&nbsp;"
+                     }
+
+                ],
+                remove: function (e) {
+                    console.log("Removing ", e.model.BOOK_ID);
+                }
+
+            });
+        }
+        
+        //刪除書籍列
+        function deleteBookButtonClick(e) {
+            e.preventDefault();
+            var dataRow = this.dataItem($(e.currentTarget).closest("tr"));
+            console.log("book id is " + dataRow.BOOK_ID);
+            console.log("book status is " + dataRow.BOOK_STATUS_CODE);
+            deleteAlert(dataRow.BOOK_STATUS_CODE, dataRow.BOOK_ID, dataRow, removeDataRow);
+            
+        }
+        //跳轉更新書籍頁面
+        function showUpdate(e) {
+            e.preventDefault();
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            window.location.pathname = "/Book/UpdateBook/" + dataItem.BOOK_ID;
+            console.log(dataItem.BOOK_ID);
+        }
+        
+        //跳轉新增書籍頁面
+        $('#insertBook').click(function (e) {
+            window.location.pathname = "/Book/InsertBook";
+        });
+
+        function removeDataRow(dataRow) {
+            var dataSource = $("#grid").data('kendoGrid').dataSource;
+            dataSource.remove(dataRow);
+        }
+    });
+
+</script>
 @*<style type="text/css">
-    td{
-        max-width:150px;
-        white-space:nowrap;
-        text-overflow:ellipsis;
-        overflow:hidden;
-    } 
-</style>*@
+        td{
+            max-width:150px;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+        }
+    </style>*@
 
 

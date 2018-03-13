@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net">
+<!-- type = " namespace / 組件名稱 " -->
+  <object id="BookController"  type="eBook.Controllers.BookController,eBook" singleton="false">
+    <property name="classService" ref="ClassService" /><!-- ref 對應到object id-->
+    <property name="bookService" ref="BookService" />
+  </object>
+
+  <object id="ClassService1" type="eBook.Service.ClassService,eBook.Service">
+    <property name="classDao" ref="ClassDao" />
+  </object>
+
+  <object id="BookService1" type="eBook.Service.BookService,eBook.Service">
+    <property name="bookDao" ref="BookDao" />
+  </object>
+
+  <object id="ClassDao" type="eBook.Dao.ClassDao,eBook.Dao"/>
+  <object id="BookDao" type="eBook.Dao.BookDao,eBook.Dao"/>
+
+</objects>
