@@ -1,5 +1,4 @@
 C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Model\bin\Debug\eBook.Model.dll
 C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Model\bin\Debug\eBook.Model.pdb
-C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Model\obj\Debug\eBook.Model.csprojResolveAssemblyReference.cache
 C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Model\obj\Debug\eBook.Model.dll
 C:\Users\mindy\OneDrive\Documents\Visual Studio 2015\Projects\eBook\eBook.Model\obj\Debug\eBook.Model.pdb

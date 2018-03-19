@@ -9,7 +9,7 @@ namespace eBook.Dao
 {
     public class BookTestDao : IBookDao
     {
-        public void DeleteBookById(string BookId)
+        public bool DeleteBookById(string BookId)
         {
             throw new NotImplementedException();
         }

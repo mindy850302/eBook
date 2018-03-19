@@ -234,7 +234,6 @@
     <Content Include="Content\kendo.nova.mobile.min.css" />
     <Content Include="Content\kendo.office365.min.css" />
     <Content Include="Content\kendo.office365.mobile.min.css" />
-    <Content Include="Content\kendo.rtl.css" />
     <Content Include="Content\kendo.rtl.min.css" />
     <Content Include="Content\kendo.silver.min.css" />
     <Content Include="Content\kendo.silver.mobile.min.css" />
@@ -245,7 +244,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Log4Net\log4netconfig.xml" />
-    <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="scripts\angular.min.js" />
     <Content Include="scripts\bootstrap.js" />

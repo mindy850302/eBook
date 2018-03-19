@@ -165,13 +165,16 @@ namespace eBook.Dao
         }
 
         /// <summary>
-        /// 刪除書籍
+        /// 測試刪除書籍前，先判斷借閱狀態
         /// </summary>
-        public void DeleteBookById(string BookId)
+        public bool DeleteBookById(string BookId)
         {
-            try
+            eBook.Model.Book book = GetUpdateBook(BookId);
+            if(book.BOOK_STATUS.Equals("A")|| book.BOOK_STATUS.Equals("U"))
             {
-                string sql = @"
+                try
+                {
+                    string sql = @"
                                 BEGIN TRY
                                     BEGIN TRANSACTION
                                         Delete FROM BOOK_DATA Where BOOK_ID=@BookId;
@@ -181,19 +184,27 @@ namespace eBook.Dao
 	                                SELECT ERROR_NUMBER()
                                     ROLLBACK TRAN
                                 END CATCH;";
-                using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+                    using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+                    {
+                        conn.Open();
+                        SqlCommand cmd = new SqlCommand(sql, conn);
+                        cmd.Parameters.Add(new SqlParameter("@BookId", BookId));
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                    }
+                    return true;
+                }
+                catch (Exception ex)
                 {
-                    conn.Open();
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.Add(new SqlParameter("@BookId", BookId));
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
+                    Console.WriteLine(ex);
+                    throw;
                 }
             }
-            catch (Exception ex)
+            else
             {
-                throw ex;
+                return false;
             }
+            
         }
 
         /// <summary>

@@ -20,10 +20,12 @@ namespace eBook.Service
             return bookDao.GetBookByCondtioin(arg);
         }
 
-        public void DeleteBookById(string BookId)
+        public bool DeleteBookById(string BookId)
         {
-            bookDao.DeleteBookById(BookId);
+            return bookDao.DeleteBookById(BookId);
         }
+
+
 
         public eBook.Model.Book GetUpdateBook(String id)
         {

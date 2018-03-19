@@ -103,8 +103,15 @@ namespace eBook.Controllers
         {
             try
             {
-                bookService.DeleteBookById(bookId);
-                return Json(true);
+ 
+                if(bookService.DeleteBookById(bookId))
+                {
+                    return Json(true);
+                }
+                else
+                {
+                    return Json(false);
+                }              
             }
             catch (Exception ex)
             {

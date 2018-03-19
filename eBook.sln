@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eBook.Dao", "eBook.Dao\eBoo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eBook.Common", "eBook.Common\eBook.Common.csproj", "{BE2427D5-C92E-47DD-8D40-E95BD8D5D7C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eBookTest", "eBookTest\eBookTest.csproj", "{4AC4A154-F79F-4D3E-8DFB-45A454D91B69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BE2427D5-C92E-47DD-8D40-E95BD8D5D7C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE2427D5-C92E-47DD-8D40-E95BD8D5D7C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE2427D5-C92E-47DD-8D40-E95BD8D5D7C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AC4A154-F79F-4D3E-8DFB-45A454D91B69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AC4A154-F79F-4D3E-8DFB-45A454D91B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AC4A154-F79F-4D3E-8DFB-45A454D91B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AC4A154-F79F-4D3E-8DFB-45A454D91B69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
